@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>e37184e0-57cd-4ee7-b9d5-60a6e09f88cd</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Boxes.API\Boxes.API.csproj" />
+    <ProjectReference Include="..\Identity.API\Identity.API.csproj" />
+    <ProjectReference Include="..\MicroBoxer.GrpcService\MicroBoxer.GrpcService.csproj" />
+    <ProjectReference Include="..\MicroBoxer.Web\MicroBoxer.Web.csproj" />
+    <ProjectReference Include="..\Webhook.API\Webhook.API.csproj" />
+    <ProjectReference Include="..\Webhook.Client\Webhook.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.2.0" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.2.0" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="8.2.0" />
+  </ItemGroup>
+
+</Project>

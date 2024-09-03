@@ -1,0 +1,47 @@
+﻿@using MicroBoxer.Web.Services
+@rendermode InteractiveServer
+@inject BoxesNotificationService boxesNotificationService
+@inject NavigationManager Nav
+@implements IDisposable
+
+@code {
+
+    [Parameter]
+    public EventCallback RefreshRequest { get; set; }
+    private IDisposable? boxesChangedSubscription;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var userId = "1";
+            if (!string.IsNullOrEmpty(userId))
+            {
+                boxesChangedSubscription =  boxesNotificationService.SubscribeToBoxesChangesNotifications(
+                userId, () => InvokeAsync(RefreshBoxes));
+            }
+        }
+    }
+
+    private void RefreshBoxes()
+    {
+        try
+        {
+            RefreshRequest.InvokeAsync();
+            //Nav.Refresh();
+        }
+        catch (Exception ex)
+        {
+            _ = DispatchExceptionAsync(ex);
+        }
+    }
+
+
+
+
+    public void Dispose()
+    {
+        //boxesChangedSubscription.Dispose();
+    }
+
+}

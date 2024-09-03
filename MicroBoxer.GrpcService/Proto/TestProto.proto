@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "MicroBoxer.GrpcService.Proto";
+
+package TestProto;
+
+service GrpcService{
+	rpc GetTestEvent(GetTestEventRequest) returns (TestEventResponse) { }
+}
+message GetTestEventRequest{
+}
+message TestEventResponse{
+	TestEventItem item = 1;
+}
+message TestEventItem {
+ string eventContent = 1;
+}

@@ -1,0 +1,215 @@
+﻿@page "/testing"
+@rendermode InteractiveServer
+@using MicroBoxer.Web.Services
+@using MicroBoxer.Web.Services.ViewModel
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+@inject BoxesService boxesService
+
+<PageTitle>Testing</PageTitle>
+<div class="container">
+
+    <div class="flexitem">
+        <label>BoxName</label> <InputText @bind-Value="@BoxName" />
+
+
+        <button @onclick="SendCreateBoxRequest">Save Box</button>
+        <p><b>get tests</b></p>
+
+        @foreach (var box in boxes)
+        {
+            <div>
+
+                <p><b>Box</b></p>
+                <p>@box.BoxName</p>
+                <p>@box.Id</p>
+                @foreach (var content in box.BoxContents)
+                {
+                    <p><b>Content</b></p>
+                    <p>@content.Id</p>
+                    <p>@content.BoxId</p>
+                    <p>@content.Name</p>
+                    <p>@content.Description</p>
+                }
+            </div>
+        }
+
+        @if (updateBox != null)
+        {
+            <p><b>update tests</b></p>
+
+
+            <p><b>Box</b></p>
+            <label>BoxName</label> <InputText @bind-Value="@updateBox.BoxName" />
+            <label>BoxId</label> <label>@updateBox.Id</label>
+
+            @foreach (var content in updateBox.boxContents)
+            {
+                <p><b>Content</b></p>
+                <label>ContentId</label> <label>@content.Id</label>
+                <label>ContentBoxId</label> <label>@content.BoxId</label>
+                <label>ContentName</label> <InputText @bind-Value="@content.Name" />
+                <label>ContentDescription</label> <InputText @bind-Value="@content.Description" />
+            }
+            <button @onclick="() => SendUpdateBoxRequest(updateBox.Id, updateBox.BoxName,updateBox.boxContents)">Update Box</button>
+        }
+
+
+
+        @if (deleteBox != null)
+        {
+            <p><b>delete tests</b></p>
+
+
+            <p><b>Box</b></p>
+            <label>BoxName</label> <InputText @bind-Value="@deleteBox.BoxName" />
+            <label>BoxId</label> <label>@deleteBox.Id</label>
+            @foreach (var content in deleteBox.boxContents)
+            {
+                <p><b>Content</b></p>
+                <label>ContentId</label> <label>@content.Id</label>
+                <label>ContentBoxId</label> <label>@content.BoxId</label>
+                <label>ContentName</label> <InputText @bind-Value="@content.Name" />
+                <label>ContentDescription</label> <InputText @bind-Value="@content.Description" />
+            }
+            <button @onclick="() => SendDeleteBoxRequest(deleteBox.Id)">Delete Box</button>
+        }
+
+    </div>
+    <div class="flexitem">
+
+        <label>ContentName</label> <InputText @bind-Value="@BoxContentName" />
+
+        <label>Description</label> <InputText @bind-Value="@BoxContentDescription" />
+
+        <label>BoxId</label> <InputText @bind-Value="@BoxId" />
+
+        <button @onclick="SendCreateBoxContentRequest">Save Content</button>
+        <p><b>get tests</b></p>
+    </div>
+</div>
+
+
+
+
+<MicroBoxer.Web.Components.User.BoxesRefreshOnChange RefreshRequest="RefreshBoxes" />
+
+
+@code {
+    public string BoxContentName { get; set; } = "";
+    public string BoxContentDescription { get; set; } = "";
+    public string BoxId { get; set; } = "";
+
+    public string BoxName { get; set; }
+    public List<BoxRecord> boxes { get; set; } = new List<BoxRecord>();
+    public Box updateBox { get; set; }
+    public Box deleteBox { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    public async Task SendDeleteBoxRequest(Guid boxId)
+    {
+        try
+        {
+
+            var request = new DeleteBoxRequest(boxId.ToString(),true);
+            var result = await boxesService.DeleteBox(request,Guid.NewGuid());
+            Console.WriteLine(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    public async Task SendUpdateBoxRequest(Guid boxId, string boxName, IEnumerable<BoxContent> boxContents )
+    {
+        try
+        {
+            var request = new UpdateBoxRequest(boxId.ToString(), boxName, boxContents);
+            var result = await boxesService.UpdateBox(request,Guid.NewGuid());
+            Console.WriteLine(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    public async Task SendDeleteBoxContentRequest(Guid contentId)
+    {
+        try
+        {
+            var request = new DeleteBoxContentRequest(contentId.ToString());
+            var result = await boxesService.DeleteBoxContent(request, Guid.NewGuid());
+            Console.WriteLine(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    public async Task SendUpdateBoxContentRequest(Guid? boxId, string name, string description, Guid? id)
+    {
+        try
+        {
+            var request = new UpdateBoxContentRequest(boxId.ToString(), name, description, id.ToString());
+            var result = await boxesService.UpdateBoxContent(request, Guid.NewGuid());
+            Console.WriteLine(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    public async Task SendCreateBoxRequest()
+    {
+        try
+        {
+            var request = new CreateBoxRequest(Guid.NewGuid().ToString(), BoxName, new List<BoxContentRecord>());
+            var result = await boxesService.CreateBox(request, Guid.NewGuid());
+            Console.WriteLine(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    public async Task SendCreateBoxContentRequest()
+    {
+        try
+        {
+            BoxId = BoxId == String.Empty ? null : BoxId;
+
+            var request = new CreateBoxContentRequest(BoxId, BoxContentName, BoxContentDescription);
+            var result = await boxesService.CreateBoxContent(request, Guid.NewGuid());
+            Console.WriteLine(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllBoxes();
+        //return base.OnInitializedAsync();
+    }
+    private async Task RefreshBoxes()
+    {
+        await GetAllBoxes();
+    }
+
+
+    public async Task GetAllBoxes()
+    {
+        var result = await boxesService.GetBoxes();
+        boxes = result.ToList();
+        updateBox = await boxes.FirstOrDefault().FromRecord();
+        deleteBox = await boxes.LastOrDefault().FromRecord();
+    }
+
+}

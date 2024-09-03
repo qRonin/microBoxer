@@ -1,0 +1,19 @@
+﻿div.container {
+    display: flex;
+    flex-direction: row;
+    flex: 50%;
+}
+
+div.flexitem {
+    
+} 
+
+div.boxes {
+    display: flex;
+    flex-direction: row;
+}
+
+div.contents {
+    display: flex;
+    flex-direction: row;
+}
