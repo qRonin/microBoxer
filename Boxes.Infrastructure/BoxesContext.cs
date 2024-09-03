@@ -29,7 +29,6 @@ public class BoxesContext : DbContext, IUnitOfWork
     public BoxesContext(DbContextOptions<BoxesContext> options, IMediator mediator) : base(options)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-
         System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + this.GetHashCode());
     }
     public virtual DbSet<Box> Boxes { get; set; }
@@ -44,7 +43,7 @@ public class BoxesContext : DbContext, IUnitOfWork
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
-        //send domain events
+        await _mediator.DispatchDomainEventsAsync(this);
         _ = await base.SaveChangesAsync(cancellationToken);
         return true;
     }

@@ -29,7 +29,8 @@ public class BoxCreatedDomainEventHandler : INotificationHandler<BoxCreatedDomai
         var boxCreatedEvent = new BoxCreatedIntegrationEvent
            (domainEvent.box.Id);
         await _boxesIntegrationEventService.AddAndSaveEventAsync(boxCreatedEvent);
-        await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync(boxCreatedEvent);
+        //await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync(boxCreatedEvent);
+        await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync();
 
     }
 }

@@ -29,7 +29,7 @@ public class BoxContentDeletedDomainEventHandler : INotificationHandler<BoxConte
         var boxContentDeletedEvent = new BoxContentDeletedIntegrationEvent
            (domainEvent.id);
         await _boxesIntegrationEventService.AddAndSaveEventAsync(boxContentDeletedEvent);
-        await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync(boxContentDeletedEvent);
-
+        //await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync(boxContentDeletedEvent);
+        await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync();
     }
 }

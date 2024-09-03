@@ -28,8 +28,6 @@ public class CreateBoxContentCommandHandler : IRequestHandler<CreateBoxContentCo
 
     public async Task<bool> Handle(CreateBoxContentCommand command, CancellationToken cancellationToken)
     {
-        var boxContentCreatedEvent = new BoxContentCreatedIntegrationEvent();
-        await _boxIntegrationEventService.AddAndSaveEventAsync(boxContentCreatedEvent);
         Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent content = new Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent()
         {
             BoxId = command.BoxId,
