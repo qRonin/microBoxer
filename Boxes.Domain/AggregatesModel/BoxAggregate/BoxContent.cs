@@ -64,21 +64,21 @@ namespace Boxes.Domain.AggregatesModel.BoxAggregate
 
         private void AddBoxContentCreatedDomainEvent()
         {
-            var boxContentCreatedDomainEvent = new BoxContentCreatedDomainEvent();
+            var boxContentCreatedDomainEvent = new BoxContentCreatedDomainEvent(this);
 
             this.AddDomainEvent(boxContentCreatedDomainEvent);
 
         }
         public void AddBoxContentUpdatedDomainEvent()
         {
-            var boxContentUpdatedDomainEvent = new BoxContentUpdatedDomainEvent();
+            var boxContentUpdatedDomainEvent = new BoxContentUpdatedDomainEvent(this.Id);
 
             this.AddDomainEvent(boxContentUpdatedDomainEvent);
 
         }
         public void AddBoxContentDeletedDomainEvent()
         {
-            var boxContentDeletedDomainEvent = new BoxContentDeletedDomainEvent();
+            var boxContentDeletedDomainEvent = new BoxContentDeletedDomainEvent(this.Id);
 
             this.AddDomainEvent(boxContentDeletedDomainEvent);
 

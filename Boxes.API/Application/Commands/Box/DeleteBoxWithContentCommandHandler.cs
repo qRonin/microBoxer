@@ -36,7 +36,7 @@ public class DeleteBoxWithContentCommandHandler : IRequestHandler<DeleteBoxWithC
         {
             foreach (var content in box.BoxContents)
             {
-               _boxContentRepository.Delete(content.Id);
+                _boxContentRepository.Delete(content.Id);
                 content.AddBoxContentDeletedDomainEvent();
             }
         }

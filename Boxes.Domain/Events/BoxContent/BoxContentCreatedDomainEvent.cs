@@ -7,5 +7,7 @@ using System.Threading.Tasks;
 
 namespace Boxes.Domain.Events.BoxContent;
 
-public record BoxContentCreatedDomainEvent() : INotification;
+public record BoxContentCreatedDomainEvent(
+            Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent boxContent
+    ) : INotification;
 

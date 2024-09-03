@@ -7,5 +7,7 @@ using System.Threading.Tasks;
 
 namespace Boxes.Domain.Events.BoxContent;
 
-public record BoxContentUpdatedDomainEvent : INotification;
+public record BoxContentUpdatedDomainEvent(
+    Guid id
+    ) : INotification;
 

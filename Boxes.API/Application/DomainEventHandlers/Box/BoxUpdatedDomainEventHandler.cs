@@ -27,7 +27,7 @@ public class BoxUpdatedDomainEventHandler : INotificationHandler<BoxUpdatedDomai
     {
 
         var boxCreatedEvent = new BoxUpdatedIntegrationEvent
-           ();
+           (domainEvent.id);
         await _boxesIntegrationEventService.AddAndSaveEventAsync(boxCreatedEvent);
         await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync(boxCreatedEvent);
 
