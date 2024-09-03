@@ -7,17 +7,9 @@ namespace Boxes.API.Application.IntegrationEvents.Events
     public record BoxCreatedIntegrationEvent : IntegrationEvent
     {
         public Guid Id { get; set; }
-        public string BoxName { get; init; }
-
-        public IEnumerable <BoxContent> BoxContents { get; set; }
-
-        public BoxCreatedIntegrationEvent(string boxName, Guid id, IEnumerable<BoxContent> boxContents)
+        public BoxCreatedIntegrationEvent(Guid id)
         {
-            //new DTO here?
-            BoxName = boxName;
-            Id = id;
-            BoxContents = boxContents;
-            
+            Id = id;      
         }
 
     }
