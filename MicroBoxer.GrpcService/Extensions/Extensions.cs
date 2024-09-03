@@ -1,8 +1,6 @@
 ﻿using EventBus.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using EventBusRabbitMQ;
-using MicroBoxer.ApiService.Events;
-using MicroBoxer.GrpcService.IntegrationEvents.Events;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -33,12 +31,5 @@ public static class Extensions
         //eventBusBuilder.AddSubscription<NewIntegrationEvent, NewIntegrationEventHandler>();
     }
 
-
-    /*
-    [JsonSerializable(typeof(NewIntegrationEvent))]
-    partial class IntegrationEventContext : JsonSerializerContext
-    {
-
-    }*/
 
 }
