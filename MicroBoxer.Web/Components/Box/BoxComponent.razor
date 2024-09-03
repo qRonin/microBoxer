@@ -1,0 +1,73 @@
+﻿@using MicroBoxer.Web.Services
+@using MicroBoxer.Web.Services.ViewModel
+@rendermode InteractiveServer
+@implements IDisposable
+@inject BoxesService boxesService
+
+<div class="single-box">
+    <div class="box-item">
+        <div class="box-item-optionbar">
+        </div>
+    </div>
+    <div class="box-item">
+        <div class="box-item-data">
+
+            @if (!EditMode)
+            {
+                <div class="box-not-editable">
+                    <label class="normal" for="BoxName">Box Name:</label>
+                    <p class="p-content-boxname">@Box.BoxName </p>
+                    <label class="normal" for="Id">BoxId:</label>
+                    <p class="p-content-id">@Box.Id </p>
+                </div>
+            }
+            else
+            {
+                <div class="box-editable">
+                    <label class="normal" for="BoxName">BoxName:</label>
+                    <input id="BoxName" value="@Box.BoxName" />
+                    <label class="normal" for="Id">BoxId:</label>
+                    <input id="Id" value="@Box.Id"/>
+                    <button @onclick="SaveChanges">Save Box Changes </button>
+                </div>
+            }
+
+            @foreach (var content in Box.BoxContents)
+            {
+                <MicroBoxer.Web.Components.Box.BoxContent.BoxContentComponent BoxContent="@content"/>
+
+            }
+        </div>
+
+    </div>
+</div>
+
+@code{
+    public bool EditMode { get; set; } = true;
+    [Parameter]
+    public Box Box { get; set; }
+
+    public void Dispose()
+    {
+
+    }
+
+    public async Task SaveChanges()
+    {
+        
+    }
+
+    public async Task SendUpdateBoxRequest(Guid boxId, string boxName, IEnumerable<MicroBoxer.Web.Services.ViewModel.BoxContent> boxContents)
+    {
+        try
+        {
+            var request = new UpdateBoxRequest(boxId.ToString(), boxName, boxContents);
+            var result = await boxesService.UpdateBox(request, Guid.NewGuid());
+            Console.WriteLine(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}

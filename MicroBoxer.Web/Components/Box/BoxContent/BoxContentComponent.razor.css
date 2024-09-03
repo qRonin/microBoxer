@@ -1,0 +1,20 @@
+﻿
+div.single-content {
+    display: flex;
+    flex-direction: row;
+}
+
+div.content-item {
+    display: flex;
+    flex-direction: column;
+}
+
+div.content-editable {
+    display: flex;
+    flex-direction: column;
+}
+
+input{
+    width:400px;
+
+}

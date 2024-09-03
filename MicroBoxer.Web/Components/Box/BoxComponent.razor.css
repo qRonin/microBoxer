@@ -1,0 +1,17 @@
+﻿div.single-box{
+    display: flex;
+    flex-direction: row;
+}
+
+div.box-item {
+    display: flex;
+    flex-direction: column;
+}
+
+div.box-editable {
+    display: flex;
+    flex-direction: column;
+}
+input {
+    width: 400px;
+}

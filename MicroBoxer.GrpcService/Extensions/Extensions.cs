@@ -15,9 +15,8 @@ public static class Extensions
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
         builder.AddRedisClient("redis");
-        //builder.Services.AddSingleton<IRepository, RedisRepository>();
+        //builder.Services.AddSingleton<IRepository, RedisRepository>(); 
         builder.AddRabbitMqEventBus("eventbus");
-            //.AddSubscription<NewIntegrationEvent, NewIntegrationEventHandler>();
             //.ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
             //.AddSubscriptions();
             

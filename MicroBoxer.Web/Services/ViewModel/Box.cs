@@ -5,12 +5,12 @@ public class Box
     public Guid Id { get; set; }
     public string BoxName { get; set; }
 
-    public List<BoxContent> boxContents { get; set; }
+    public List<BoxContent> BoxContents { get; set; }
     public Box()
     {
         //"00000000-0000-0000-0000-000000000000"
         BoxName = "";
-        boxContents = new List<BoxContent>();
+        BoxContents = new List<BoxContent>();
         Id = Guid.Parse("00000000-0000-0000-0000-000000000000");
     }
 }
@@ -44,11 +44,11 @@ public static class BoxModelExtensions
             {
                 Id = Guid.Parse(boxRecord.Id),
                 BoxName = boxRecord.BoxName,
-                boxContents = new List<BoxContent>()
+                BoxContents = new List<BoxContent>()
             };
             foreach (var content in boxRecord.BoxContents)
             {
-                box.boxContents.Add(await FromRecord(content));
+                box.BoxContents.Add(await FromRecord(content));
             }
             return box;
         }

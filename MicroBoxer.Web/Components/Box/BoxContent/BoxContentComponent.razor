@@ -1,0 +1,84 @@
+﻿@rendermode InteractiveServer
+@implements IDisposable
+@using MicroBoxer.Web.Services
+@using MicroBoxer.Web.Services.ViewModel
+@inject BoxesService boxesService
+
+<div class="single-content">
+    <div class="content-item">
+        <div class="content-item-optionbar">
+        </div>
+    </div>
+    <div class="content-item">
+        <div class="content-item-data">
+
+        @if(!EditMode){
+                <div class="content-not-editable">
+                    <label class="normal" for="ContentName">Content Name:</label>
+                    <p class="p-content-contentname">@BoxContent.Name </p>
+
+                    <label class="normal" for="ContentDescription">Content Description:</label>
+                    <p class="p-content-contentdescription">@BoxContent.Description </p>
+
+                    <label class="normal" for="BoxId">Box Id:</label>
+                    <p class="p-content-boxid">@BoxContent.BoxId </p>
+
+                    <label class="normal" for="Id">Content Id:</label>
+                    <p class="p-content-id">@BoxContent.Id </p>
+                </div>
+            }
+            else
+            {
+                <div class="content-editable">
+                    <label class="normal" for="ContentName">Content Name:</label>
+                    <input id="ContentName" value="@BoxContent.Name" />
+
+                    <label class="normal" for="ContentDescription">Content Description:</label>
+                    <input id="ContentDescription" value="@BoxContent.Description" />
+
+                    <label class="normal" for="BoxId">Box Id:</label>
+                    <input id="BoxId" value="@BoxContent.BoxId" />
+
+                    <label class="normal" for="Id">Content Id:</label>
+                    <input id="Id" value="@BoxContent.Id" />
+                    <button @onclick="SaveChanges">Save Content Changes </button>
+                </div>
+            }
+
+
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+@code {
+    public bool EditMode { get; set; } = true;
+    [Parameter]
+    public BoxContent BoxContent { get; set; }
+
+    public void Dispose()
+    {
+    }
+    public async Task SaveChanges()
+    {
+
+    }
+    public async Task SendUpdateBoxContentRequest(Guid? boxId, string name, string description, Guid? id)
+    {
+        try
+        {
+            var request = new UpdateBoxContentRequest(boxId.ToString(), name, description, id.ToString());
+            var result = await boxesService.UpdateBoxContent(request, Guid.NewGuid());
+            Console.WriteLine(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}
