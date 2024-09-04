@@ -1,9 +1,9 @@
-﻿using MicroBoxer.Web.Services;
-using MicroBoxer.Web.Services.ViewModel;
+﻿using ConsoleBenchmarks.BoxesApiCalls;
+using ConsoleBenchmarks.BoxesApiCalls.Model;
 using Microsoft.IdentityModel.Tokens;
 using System.Xml.Linq;
 
-namespace MicroBoxer.Web.Extensions
+namespace ConsoleBenchmarks.BoxesApiCalls
 {
     public static class DataGenerator
     {
@@ -14,7 +14,6 @@ namespace MicroBoxer.Web.Extensions
                 int counter = 0;
                 IDisposable? boxesChangedSubscription;
                 string BoxName;
-
 
             for (counter = 0; counter < numberOfBoxes; counter++)
             {

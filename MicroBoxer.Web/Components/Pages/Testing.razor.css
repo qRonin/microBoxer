@@ -1,6 +1,6 @@
 ﻿div.container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex: 50%;
 }
 
@@ -16,4 +16,8 @@ div.boxes {
 div.contents {
     display: flex;
     flex-direction: row;
+}
+
+div.box-and-contents-container{
+    margin: 20px 20px 20px 20px;
 }

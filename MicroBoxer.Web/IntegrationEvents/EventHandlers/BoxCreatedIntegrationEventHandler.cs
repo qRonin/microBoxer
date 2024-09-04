@@ -12,6 +12,7 @@ namespace MicroBoxer.Web.IntegrationEvents.EventHandlers
         {
             string userId = "1";
             await boxesNotificationService.NotifyBoxesChangedAsync(userId);
+
         }
     }
 }

@@ -96,7 +96,7 @@ namespace Boxes.API.Apis
                 return TypedResults.NotFound();
             }
         }
-        public static async Task<bool> CreateBox(CreateBoxCommand command, [AsParameters] BoxesServices services)
+        public static async Task<BoxDTO> CreateBox(CreateBoxCommand command, [AsParameters] BoxesServices services)
         {
             return await services.Mediator.Send(command);
         }
@@ -146,7 +146,7 @@ namespace Boxes.API.Apis
             }
             return TypedResults.Ok();
         }
-        public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> CreateBoxRequest
+        public static async Task<Results<Ok<string>, BadRequest<string>, ProblemHttpResult>> CreateBoxRequest
             ([FromHeader(Name = "x-requestid")] Guid requestId, 
             CreateBoxRequest request,
             [AsParameters] BoxesServices services)
@@ -157,7 +157,7 @@ namespace Boxes.API.Apis
 
            var result = await CreateBox(createBoxCommand, services);
 
-            if (result)
+            if (result != null)
             {
                 services.Logger.LogInformation($"CreateBoxCommand succeeded - RequestId: {requestId}");
             }
@@ -166,7 +166,9 @@ namespace Boxes.API.Apis
                 services.Logger.LogWarning($"CreateBoxCommand failed - RequestId: {requestId}");
             }
 
-            return TypedResults.Ok();
+
+            var res = TypedResults.Ok<string>(result.Id.ToString());
+            return res;
 
         }
         public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> DeleteBoxRequest

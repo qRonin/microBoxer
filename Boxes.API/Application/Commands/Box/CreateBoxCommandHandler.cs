@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Boxes.API.Application.Commands.Box;
 
-public class CreateBoxCommandHandler : IRequestHandler<CreateBoxCommand, bool>
+public class CreateBoxCommandHandler : IRequestHandler<CreateBoxCommand, BoxDTO>
 {
     private readonly IBoxRepository _boxRepository;
     private readonly IMediator _mediator;
@@ -31,7 +31,7 @@ public class CreateBoxCommandHandler : IRequestHandler<CreateBoxCommand, bool>
         _boxIntegrationEventService = boxIntegrationEventService ?? throw new ArgumentNullException(nameof(boxIntegrationEventService));
     }
 
-    public async Task<bool> Handle(CreateBoxCommand command, CancellationToken cancellationToken)
+    public async Task<BoxDTO> Handle(CreateBoxCommand command, CancellationToken cancellationToken)
     {
         var boxContents = new List<Domain.AggregatesModel.BoxAggregate.BoxContent>();
         Domain.AggregatesModel.BoxAggregate.Box box = new Domain.AggregatesModel.BoxAggregate.Box()
@@ -40,7 +40,9 @@ public class CreateBoxCommandHandler : IRequestHandler<CreateBoxCommand, bool>
             BoxContents = boxContents
         };
         _boxRepository.Add(box);
-        return await _boxRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+        await _boxRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+
+        return box.ToBoxDTO();
     }
 
 

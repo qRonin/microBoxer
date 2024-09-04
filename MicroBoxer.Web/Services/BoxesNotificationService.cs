@@ -4,7 +4,6 @@
     {
         private readonly object _subscriptionsLock = new();
         private readonly Dictionary<string, HashSet<Subscription>> _subscriptionsByUserId = new();
-
         public IDisposable SubscribeToBoxesChangesNotifications(string userId, Func<Task> callback)
         {
             var subscription = new Subscription(this, userId, callback);
@@ -49,7 +48,7 @@
             }
         }
 
-        private class Subscription(BoxesNotificationService owner, string buyerId, Func<Task> callback) : IDisposable
+        private class Subscription(BoxesNotificationService owner, string userId, Func<Task> callback) : IDisposable
         {
             public Task NotifyAsync()
             {
@@ -57,7 +56,8 @@
             }
 
             public void Dispose()
-                => owner.Unsubscribe(buyerId, this);
+                => owner.Unsubscribe(userId, this);
         }
+
     }
 }

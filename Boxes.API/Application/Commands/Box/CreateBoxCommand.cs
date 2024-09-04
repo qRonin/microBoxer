@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace Boxes.API.Application.Commands.Box;
 
 [DataContract]
-public record CreateBoxCommand : IRequest<bool>
+public record CreateBoxCommand : IRequest<BoxDTO>
 {
     [DataMember]
     public Guid Id { get; private set; }

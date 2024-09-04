@@ -31,16 +31,16 @@
             {
                 <div class="content-editable">
                     <label class="normal" for="ContentName">Content Name:</label>
-                    <input id="ContentName" value="@BoxContent.Name" />
+                    <input id="ContentName" @bind-value="@BoxContent.Name" />
 
                     <label class="normal" for="ContentDescription">Content Description:</label>
-                    <input id="ContentDescription" value="@BoxContent.Description" />
+                    <input id="ContentDescription" @bind-value="@BoxContent.Description" />
 
                     <label class="normal" for="BoxId">Box Id:</label>
-                    <input id="BoxId" value="@BoxContent.BoxId" />
+                    <input id="BoxId" @bind-value="@BoxContent.BoxId" />
 
                     <label class="normal" for="Id">Content Id:</label>
-                    <input id="Id" value="@BoxContent.Id" />
+                    <input id="Id" @bind-value="@BoxContent.Id" />
                     <button @onclick="SaveChanges">Save Content Changes </button>
                 </div>
             }
@@ -66,7 +66,7 @@
     }
     public async Task SaveChanges()
     {
-
+        await SendUpdateBoxContentRequest(BoxContent.BoxId, BoxContent.Name, BoxContent.Description, BoxContent.Id);
     }
     public async Task SendUpdateBoxContentRequest(Guid? boxId, string name, string description, Guid? id)
     {

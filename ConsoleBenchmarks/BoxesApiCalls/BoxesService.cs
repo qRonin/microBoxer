@@ -1,19 +1,27 @@
-﻿using System.Text.Json;
+﻿using ConsoleBenchmarks.BoxesApiCalls;
+using System.Net.Http.Json;
+using System.Text.Json;
 
-namespace MicroBoxer.Web.Services;
+namespace ConsoleBenchmarks.BoxesApiCalls;
 
 public class BoxesService(HttpClient httpClient)
 {
-    private readonly string remoteServiceBaseUrlBoxes = "/api/boxesapi/box/";
-    private readonly string remoteServiceBaseUrlContents = "/api/boxesapi/content/";
+
+
+
+    private readonly string remoteServiceBaseUrlBoxes = "https://localhost:7046/api/boxesapi/box/";
+    private readonly string remoteServiceBaseUrlContents = "https://localhost:7046/api/boxesapi/content/";
     public Task<BoxRecord[]> GetBoxes()
     {
+
+
        var result = httpClient.GetFromJsonAsync<BoxRecord[]>(remoteServiceBaseUrlBoxes)!;
         Console.WriteLine(result);
         return result;
     }
     public Task<BoxRecord> GetBox(Guid id)
     {
+        httpClient.DefaultRequestVersion = new Version(1, 0);
         var result = httpClient.GetFromJsonAsync<BoxRecord>(remoteServiceBaseUrlBoxes+id)!;
         Console.WriteLine(result);
         return result;
@@ -23,6 +31,7 @@ public class BoxesService(HttpClient httpClient)
         , Guid requestId
         )
     {
+        httpClient.DefaultRequestVersion = new Version(1, 0);
         var requestMessage = new HttpRequestMessage(HttpMethod.Put, remoteServiceBaseUrlBoxes);
         requestMessage.Headers.Add("x-requestid", requestId.ToString());
         requestMessage.Content = JsonContent.Create(request);
@@ -37,6 +46,7 @@ public class BoxesService(HttpClient httpClient)
     , Guid requestId
     )
     {
+        httpClient.DefaultRequestVersion = new Version(1, 0);
         var requestMessage = new HttpRequestMessage(HttpMethod.Put, remoteServiceBaseUrlContents);
         requestMessage.Headers.Add("x-requestid", requestId.ToString());
         requestMessage.Content = JsonContent.Create(request);
@@ -46,6 +56,7 @@ public class BoxesService(HttpClient httpClient)
     , Guid requestId
     )
     {
+        httpClient.DefaultRequestVersion = new Version(1, 0);
         // new() { PropertyNameCaseInsensitive = true,WriteIndented = true  }
         var serializedRequest = JsonSerializer.Serialize(request);
         var requestMessage = new HttpRequestMessage(HttpMethod.Put, remoteServiceBaseUrlBoxes+"update/");
@@ -58,6 +69,7 @@ public class BoxesService(HttpClient httpClient)
     , Guid requestId
     )
     {
+        httpClient.DefaultRequestVersion = new Version(1, 0);
         var requestMessage = new HttpRequestMessage(HttpMethod.Put, remoteServiceBaseUrlContents+"update/");
         requestMessage.Headers.Add("x-requestid", requestId.ToString());
         requestMessage.Content = JsonContent.Create(request);
@@ -67,6 +79,7 @@ public class BoxesService(HttpClient httpClient)
     , Guid requestId
     )
     {
+        httpClient.DefaultRequestVersion = new Version(1, 0);
         var requestMessage = new HttpRequestMessage(HttpMethod.Put, remoteServiceBaseUrlBoxes+"delete/");
         requestMessage.Headers.Add("x-requestid", requestId.ToString());
         requestMessage.Content = JsonContent.Create(request);
@@ -76,6 +89,7 @@ public class BoxesService(HttpClient httpClient)
     , Guid requestId
     )
     {
+        httpClient.DefaultRequestVersion = new Version(1, 0);
         var requestMessage = new HttpRequestMessage(HttpMethod.Put, remoteServiceBaseUrlContents+"delete/");
         requestMessage.Headers.Add("x-requestid", requestId.ToString());
         requestMessage.Content = JsonContent.Create(request);

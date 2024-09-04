@@ -2,8 +2,9 @@
 div.single-content {
     display: flex;
     flex-direction: row;
+    background-color:dimgray;
 }
-
+ 
 div.content-item {
     display: flex;
     flex-direction: column;

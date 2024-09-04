@@ -1,21 +1,28 @@
 ﻿@page "/testing"
 @rendermode InteractiveServer
+@using MicroBoxer.Web.Extensions
 @using MicroBoxer.Web.Services
 @using MicroBoxer.Web.Services.ViewModel
 @attribute [StreamRendering(true)]
 @attribute [OutputCache(Duration = 5)]
 @inject BoxesService boxesService
+@inject BoxesNotificationService boxesNotificationService
 
 
 <div class="container">
 <PageTitle>Testing</PageTitle>
-    
-    @foreach (var box in BoxList)
-    {
-        <MicroBoxer.Web.Components.Box.BoxComponent Box="@box" />
-    }
+    <p>@BoxList.Count</p>
+    <div class="box-and-contents-container">
+        @foreach (var box in BoxList)
+        {
+            <MicroBoxer.Web.Components.Box.BoxComponent Box="@box" />
+        }
+    </div>
 
 
+
+
+    <button @onclick="GenerateData">Generate Data Request</button>
 <MicroBoxer.Web.Components.User.BoxesRefreshOnChange RefreshRequest="RefreshBoxes" />
 </div>
 
@@ -23,7 +30,7 @@
     public string BoxContentName { get; set; } = "";
     public string BoxContentDescription { get; set; } = "";
     public string BoxId { get; set; } = "";
-
+    private IDisposable? boxesChangedSubscription;
     public string BoxName { get; set; }
     public List<Box> BoxList = new List<Box>();
     public List<BoxRecord> boxes { get; set; } = new List<BoxRecord>();
@@ -118,8 +125,8 @@
     protected async override Task OnParametersSetAsync()
     {
 
-       await base.OnParametersSetAsync();
-        if (BoxList.Count == 0)
+        await base.OnParametersSetAsync();
+        /*if (BoxList.Count == 0)
         {
             await AddFirstBox();
         }
@@ -127,15 +134,20 @@
         if (BoxList.Count == 1 && BoxList.FirstOrDefault().BoxContents.Count == 0)
         {
             await AddFirstContent(boxes.FirstOrDefault().Id);
-        }
+        }*/
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            var userId = "1";
+            if (!string.IsNullOrEmpty(userId))
+            {
+                boxesChangedSubscription = boxesNotificationService.SubscribeToBoxesChangesNotifications(
+                userId, () => InvokeAsync(RefreshBoxes));
+            }
         }
-
         await base.OnAfterRenderAsync(firstRender);
     }
 
@@ -148,7 +160,7 @@
     }
     private async Task RefreshBoxes()
     {
-        await GetAllBoxes();
+        //await GetAllBoxes();
     }
 
 
@@ -197,6 +209,10 @@
     {
 
 
+    }
+    public async Task GenerateData()
+    {
+        await boxesService.GenerateBoxes(2, 0);
     }
 
 }

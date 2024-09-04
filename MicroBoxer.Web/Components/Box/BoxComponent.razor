@@ -11,7 +11,7 @@
     </div>
     <div class="box-item">
         <div class="box-item-data">
-
+            <p>@Box.BoxContents.Count</p>
             @if (!EditMode)
             {
                 <div class="box-not-editable">
@@ -25,9 +25,9 @@
             {
                 <div class="box-editable">
                     <label class="normal" for="BoxName">BoxName:</label>
-                    <input id="BoxName" value="@Box.BoxName" />
+                    <input id="BoxName"  @bind-value="@Box.BoxName"/>
                     <label class="normal" for="Id">BoxId:</label>
-                    <input id="Id" value="@Box.Id"/>
+                    <input id="Id" @bind-value="@Box.Id"/>
                     <button @onclick="SaveChanges">Save Box Changes </button>
                 </div>
             }
@@ -54,7 +54,8 @@
 
     public async Task SaveChanges()
     {
-        
+        await SendUpdateBoxRequest(Box.Id, Box.BoxName, Box.BoxContents);
+
     }
 
     public async Task SendUpdateBoxRequest(Guid boxId, string boxName, IEnumerable<MicroBoxer.Web.Services.ViewModel.BoxContent> boxContents)
