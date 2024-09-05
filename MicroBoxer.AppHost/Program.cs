@@ -1,10 +1,11 @@
 using MicroBoxer.AppHost;
 using Microsoft.Extensions.Configuration;
 using Aspire.Hosting;
+using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-//builder.AddForwardedHeaders();
+builder.AddForwardedHeaders();
 
 
 var postgres = builder.AddPostgres("postgres")
@@ -25,33 +26,41 @@ var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", laun
 var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
 var GrpcService = builder.AddProject<Projects.MicroBoxer_GrpcService>("grpcservice")
-    .WithReference(rabbitMQ);
+    .WithReference(rabbitMQ)
+    .WithEnvironment("Identity__Url", identityEndpoint);
 
 var boxesApi = builder.AddProject<Projects.Boxes_API>("BoxesApi")
     .WithReference(rabbitMQ)
     .WithReference(boxesDb)
+    .WithEnvironment("Identity__Url", identityEndpoint)
     .WithExternalHttpEndpoints();
 
-builder.AddProject<Projects.Webhook_API>("WebhookApi")
-    .WithExternalHttpEndpoints();
+var webhookApi = builder.AddProject<Projects.Webhook_API>("WebhookApi")
+    .WithExternalHttpEndpoints()
+    .WithEnvironment("Identity__Url", identityEndpoint)
+    ;
 
 var webhooksClient = builder.AddProject<Projects.Webhook_Client>("WebhookClient")
-    .WithExternalHttpEndpoints();
+    .WithExternalHttpEndpoints()
+    .WithEnvironment("Identity__Url", identityEndpoint);
 
 
 var webApp = builder.AddProject<Projects.MicroBoxer_Web>("WebApp")
     .WithExternalHttpEndpoints()
     .WithReference(rabbitMQ)
-    .WithReference(boxesApi);
-    //.WithEnvironment("IdentityUrl", identityEndpoint);
-;
+    .WithReference(boxesApi)
+    .WithEnvironment("IdentityUrl", identityEndpoint);
 
 
 
 webApp.WithEnvironment("CallBackUrl", webApp.GetEndpoint(launchProfileName));
 webhooksClient.WithEnvironment("CallBackUrl", webhooksClient.GetEndpoint(launchProfileName));
 
-
+// Identity has a reference to all of the apps for callback urls, this is a cyclic reference
+identityApi.WithEnvironment("BoxesApiClient", boxesApi.GetEndpoint("http"))
+           .WithEnvironment("WebhooksApiClient", webhookApi.GetEndpoint("http"))
+           .WithEnvironment("WebhooksWebClient", webhooksClient.GetEndpoint(launchProfileName))
+           .WithEnvironment("WebAppClient", webApp.GetEndpoint(launchProfileName));
 
 
 

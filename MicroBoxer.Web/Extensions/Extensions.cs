@@ -5,6 +5,7 @@ using EventBusRabbitMQ;
 using EventBus.Abstractions;
 using MicroBoxer.Web.IntegrationEvents.Events;
 using MicroBoxer.Web.IntegrationEvents.EventHandlers;
+using WebApp.Services;
 
 namespace MicroBoxer.Web.Extensions;
 
@@ -16,7 +17,7 @@ public static class Extensions
         .AddEventBusSubscriptions();
         builder.Services.AddHttpForwarderWithServiceDiscovery();
         builder.Services.AddSingleton<BoxesNotificationService>();
-
+        builder.Services.AddScoped<LogOutService>();
         //builder.Services.AddHttpClient<BoxesService>(b => b.BaseAddress = new("http://boxes-api"))
         //.AddApiVersion(1.0);
         builder.Services.AddHttpClient<BoxesService>(b => b.BaseAddress = new("https://localhost:7046"))
