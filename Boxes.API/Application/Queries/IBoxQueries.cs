@@ -5,8 +5,8 @@ namespace Boxes.API.Application.Queries;
 
 public interface IBoxQueries
 {
-    Task<Box> GetBoxAsync(Guid id);
-    public Task<IEnumerable<Box>> GetBoxesAsync();
+    Task<BoxVM> GetBoxAsync(Guid id);
+    public Task<IEnumerable<BoxVM>> GetBoxesAsync();
 
 
     //Task<IEnumerable<OrderSummary>> GetOrdersFromUserAsync(string userId);

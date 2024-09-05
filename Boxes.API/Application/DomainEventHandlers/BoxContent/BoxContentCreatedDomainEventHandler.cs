@@ -27,8 +27,11 @@ public class BoxContentCreatedDomainEventHandler : INotificationHandler<BoxConte
     public async Task Handle(BoxContentCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
     {
 
+
+        _logger.LogInformation($"Received domain event: {domainEvent.GetType()}, EventContent: {domainEvent.boxContent.Id},{domainEvent.boxContent.Name} ");
         var boxContentCreatedEvent = new BoxContentCreatedIntegrationEvent
            (domainEvent.boxContent.Id);
+        _logger.LogInformation($"Domain event: {domainEvent.GetType()}, Created IntegrationEvent, saving for publish");
         await _boxesIntegrationEventService.AddAndSaveEventAsync(boxContentCreatedEvent);
         //await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync(boxContentCreatedEvent);
 

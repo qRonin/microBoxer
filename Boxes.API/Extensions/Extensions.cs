@@ -32,6 +32,7 @@ using Boxes.Domain.AggregatesModel.BoxAggregate;
 using Boxes.Infrastructure.Repositories;
 using Boxes.API.Application.Behaviors;
 using MediatR;
+using Boxes.Infrastructure.Idempotency;
 
 namespace Boxes.API.Extensions;
 
@@ -63,14 +64,16 @@ public static class Extensions
             cfg.AddOpenBehavior(typeof(Transaction<,>));
         });
 
+        builder.Services.AddScoped<IRequestManager, RequestManager>();
+
 
     }
 
 
     public static void AddEventBusSubscriptions(this IEventBusBuilder eventBus)
     {
-        //eventBus.AddSubscription<NewIntegrationEvent, NewIntegrationEventHandler>();
         //eventBus.AddSubscription<IntegrationEvent, IntegrationEventHandler>();
+
     }
 
     public static IApplicationBuilder UseDefaultOpenApi(this WebApplication app)

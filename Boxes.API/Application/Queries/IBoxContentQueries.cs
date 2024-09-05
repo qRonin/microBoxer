@@ -2,8 +2,8 @@
 {
     public interface IBoxContentQueries
     {
-        public Task<BoxContent> GetBoxContent(Guid contentId);
-        public Task<IEnumerable<BoxContent>> GetBoxContentsByBoxId(Guid boxId);
-        public Task<IEnumerable<BoxContent>> GetBoxContents();
+        public Task<BoxContentVM> GetBoxContent(Guid contentId);
+        public Task<IEnumerable<BoxContentVM>> GetBoxContentsByBoxId(Guid boxId);
+        public Task<IEnumerable<BoxContentVM>> GetBoxContents();
     }
 }

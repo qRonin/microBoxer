@@ -10,6 +10,7 @@ using Boxes.Domain.AggregatesModel.BoxAggregate;
 using MediatR;
 using Boxes.Infrastructure.Repositories;
 using System.Data;
+using Boxes.Infrastructure.EntityConfigurations;
 
 namespace Boxes.Infrastructure;
 
@@ -19,13 +20,7 @@ public class BoxesContext : DbContext, IUnitOfWork
     private IDbContextTransaction _currentTransaction;
     public IDbContextTransaction GetCurrentTransaction() => _currentTransaction;                 
     public bool HasActiveTransaction => _currentTransaction != null;
-    public BoxesContext()
-    {
-    }
-    public BoxesContext(DbContextOptions<BoxesContext> options)
-        : base(options)
-    {
-    }
+    public BoxesContext(DbContextOptions<BoxesContext> options) : base(options) { }
     public BoxesContext(DbContextOptions<BoxesContext> options, IMediator mediator) : base(options)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -37,7 +32,9 @@ public class BoxesContext : DbContext, IUnitOfWork
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //modelBuilder.HasDefaultSchema("boxesservicedb");
         base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfiguration(new ClientRequestEntityTypeConfiguration());
         modelBuilder.UseIntegrationEventLogs();
     }
 

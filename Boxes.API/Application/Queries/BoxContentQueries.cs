@@ -6,10 +6,10 @@ namespace Boxes.API.Application.Queries
 {
     public class BoxContentQueries(BoxesContext context) : IBoxContentQueries
     {
-        public async Task<BoxContent> GetBoxContent(Guid contentId)
+        public async Task<BoxContentVM> GetBoxContent(Guid contentId)
         {
             return await context.BoxContents.Where(b=>b.Id == contentId)
-                .Select( bc => new BoxContent
+                .Select( bc => new BoxContentVM
                 {
                     Id = bc.Id,
                     Name = bc.Name,
@@ -19,10 +19,10 @@ namespace Boxes.API.Application.Queries
                 .FirstOrDefaultAsync();         
         }
 
-        public async Task<IEnumerable<BoxContent>> GetBoxContents()
+        public async Task<IEnumerable<BoxContentVM>> GetBoxContents()
         {
             return await context.BoxContents
-                .Select(bc => new BoxContent
+                .Select(bc => new BoxContentVM
                 {
                     Id = bc.Id,
                     Name = bc.Name,
@@ -32,10 +32,10 @@ namespace Boxes.API.Application.Queries
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<BoxContent>> GetBoxContentsByBoxId(Guid boxId)
+        public async Task<IEnumerable<BoxContentVM>> GetBoxContentsByBoxId(Guid boxId)
         {
             return await context.BoxContents.Where(b => b.BoxId == boxId)
-                .Select(bc => new BoxContent
+                .Select(bc => new BoxContentVM
                 {
                     Id = bc.Id,
                     Name = bc.Name,

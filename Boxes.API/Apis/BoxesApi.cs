@@ -1,4 +1,5 @@
-﻿using Boxes.API.Application.Commands.Box;
+﻿using Boxes.API.Application.Commands;
+using Boxes.API.Application.Commands.Box;
 using Boxes.API.Application.Commands.BoxContent;
 using Boxes.API.Application.Queries;
 using MicroBoxer.ServiceDefaults;
@@ -13,21 +14,21 @@ namespace Boxes.API.Apis
         public static RouteGroupBuilder MapBoxesApiV1(this IEndpointRouteBuilder app)
         {
             var api = app.MapGroup("api/boxesapi").HasApiVersion(1.0);
-            api.MapGet("box/", GetBoxes);
+            api.MapGet("/box/", GetBoxes);
             api.MapGet("/box/{id:Guid}", GetBox);
             api.MapGet("/content/{id:Guid}", GetBoxContent);
             api.MapGet("/box/contents/{boxId:Guid}", GetBoxContents);
-            api.MapPut("/box", CreateBoxRequest);
-            api.MapPut("/content", CreateBoxContentRequest);
-            api.MapPut("/box/update", UpdateBoxRequest);
-            api.MapPut("/content/update", UpdateBoxContentRequest);
-            api.MapPut("/box/delete", DeleteBoxRequest);
+            api.MapPut("/box/", CreateBoxRequest);
+            api.MapPut("/content/", CreateBoxContentRequest);
+            api.MapPut("/box/update/", UpdateBoxRequest);
+            api.MapPut("/content/update/", UpdateBoxContentRequest);
+            api.MapPut("/box/delete/", DeleteBoxRequest);
             //api.MapPut("/box/delete/content", DeleteBoxWithContent);
-            api.MapPut("/content/delete", DeleteBoxContentRequest);
+            api.MapPut("/content/delete/", DeleteBoxContentRequest);
 
             return api;
         }
-        public static async Task<Results<Ok<BoxContent>, NotFound>> GetBoxContent
+        public static async Task<Results<Ok<BoxContentVM>, NotFound>> GetBoxContent
             (Guid? id, [AsParameters] BoxContentsServices services)
         {
             try
@@ -46,7 +47,7 @@ namespace Boxes.API.Apis
                 return TypedResults.NotFound();
             }
         }
-        public static async Task<Results<Ok<IEnumerable<BoxContent>>, NotFound>> GetBoxContents
+        public static async Task<Results<Ok<IEnumerable<BoxContentVM>>, NotFound>> GetBoxContents
             (Guid? boxId, [AsParameters] BoxContentsServices services)
         {
             try
@@ -64,7 +65,7 @@ namespace Boxes.API.Apis
                 return TypedResults.NotFound();
             }
         }
-        public static async Task<Results<Ok<Box>, NotFound>> GetBox
+        public static async Task<Results<Ok<BoxVM>, NotFound>> GetBox
             (Guid? id, [AsParameters] BoxesServices services)
         {
             try
@@ -83,7 +84,7 @@ namespace Boxes.API.Apis
                 return TypedResults.NotFound();
             }
         }
-        public static async Task<Results<Ok<IEnumerable<Box>>, NotFound>> GetBoxes
+        public static async Task<Results<Ok<IEnumerable<BoxVM>>, NotFound>> GetBoxes
             ([AsParameters] BoxesServices services)
         {
             try
@@ -100,7 +101,7 @@ namespace Boxes.API.Apis
         {
             return await services.Mediator.Send(command);
         }
-        public static async Task<bool> CreateContent(CreateBoxContentCommand command, [AsParameters] BoxesServices services)
+        public static async Task<BoxContentDTO> CreateContent(CreateBoxContentCommand command, [AsParameters] BoxesServices services)
         {
             return await services.Mediator.Send(command);
         }
@@ -155,7 +156,10 @@ namespace Boxes.API.Apis
 
             var createBoxCommand = new CreateBoxCommand(request.BoxName);
 
-           var result = await CreateBox(createBoxCommand, services);
+            var requestCreateBox = new IdentifiedCommand<CreateBoxCommand, BoxDTO>(createBoxCommand, requestId);
+
+            //var result = await CreateBox(createBoxCommand, services);
+            var result = await services.Mediator.Send(requestCreateBox);
 
             if (result != null)
             {
@@ -165,7 +169,6 @@ namespace Boxes.API.Apis
             {
                 services.Logger.LogWarning($"CreateBoxCommand failed - RequestId: {requestId}");
             }
-
 
             var res = TypedResults.Ok<string>(result.Id.ToString());
             return res;
@@ -250,7 +253,7 @@ namespace Boxes.API.Apis
             return TypedResults.Ok();
 
         }
-        public static async Task<Results<Ok, BadRequest<string>, ProblemHttpResult>> CreateBoxContentRequest
+        public static async Task<Results<Ok<string>, BadRequest<string>, ProblemHttpResult>> CreateBoxContentRequest
             ([FromHeader(Name = "x-requestid")] Guid requestId,
             CreateBoxContentRequest request,
             [AsParameters] BoxesServices services)
@@ -260,9 +263,13 @@ namespace Boxes.API.Apis
             var createBoxContentCommand = new CreateBoxContentCommand(request.Name, request.Description,
                  Guid.Parse(request.BoxId));
 
-          var result = await CreateContent(createBoxContentCommand, services);
+            var requestCreateBoxContent = new IdentifiedCommand<CreateBoxContentCommand, BoxContentDTO>(createBoxContentCommand, requestId);
 
-            if (result)
+            //var result = await CreateContent(createBoxContentCommand, services);
+            var result = await services.Mediator.Send(requestCreateBoxContent);
+
+
+            if (result != null)
             {
                 services.Logger.LogInformation($"CreateBoxContentCommand succeeded - RequestId: {requestId}");
             }
@@ -270,7 +277,7 @@ namespace Boxes.API.Apis
             {
                 services.Logger.LogWarning($"CreateBoxContentCommand failed - RequestId: {requestId}");
             }
-            return TypedResults.Ok();
+            return TypedResults.Ok(result.Id.ToString());
         }
     }
 }

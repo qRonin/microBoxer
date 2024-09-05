@@ -23,7 +23,11 @@
 
 
     <button @onclick="GenerateData">Generate Data Request</button>
-<MicroBoxer.Web.Components.User.BoxesRefreshOnChange RefreshRequest="RefreshBoxes" />
+    <!--
+        <MicroBoxer.Web.Components.User.BoxesRefreshOnChange RefreshRequest="RefreshBoxes" />
+    -->
+
+
 </div>
 
 @code {
@@ -212,7 +216,7 @@
     }
     public async Task GenerateData()
     {
-        await boxesService.GenerateBoxes(2, 0);
+        await boxesService.GenerateBoxes(1, 1);
     }
 
 }

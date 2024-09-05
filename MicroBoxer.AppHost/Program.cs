@@ -1,6 +1,6 @@
 using MicroBoxer.AppHost;
-using Projects;
 using Microsoft.Extensions.Configuration;
+using Aspire.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -18,16 +18,18 @@ var apiServiceDb = postgres.AddDatabase("apiservicedb");
 
 var launchProfileName = ShouldUseHttpForEndpoints() ? "http" : "https";
 
+var identityApi = builder.AddProject<Projects.Identity_API>("identity-api", launchProfileName)
+    .WithExternalHttpEndpoints()
+    .WithReference(identityDb);
+
+var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
+
 var GrpcService = builder.AddProject<Projects.MicroBoxer_GrpcService>("grpcservice")
     .WithReference(rabbitMQ);
 
 var boxesApi = builder.AddProject<Projects.Boxes_API>("BoxesApi")
     .WithReference(rabbitMQ)
     .WithReference(boxesDb)
-    .WithExternalHttpEndpoints();
-
-builder.AddProject<Projects.Identity_API>("IdentityApi")
-    .WithReference(identityDb)
     .WithExternalHttpEndpoints();
 
 builder.AddProject<Projects.Webhook_API>("WebhookApi")
@@ -41,7 +43,8 @@ var webApp = builder.AddProject<Projects.MicroBoxer_Web>("WebApp")
     .WithExternalHttpEndpoints()
     .WithReference(rabbitMQ)
     .WithReference(boxesApi);
-    ;
+    //.WithEnvironment("IdentityUrl", identityEndpoint);
+;
 
 
 

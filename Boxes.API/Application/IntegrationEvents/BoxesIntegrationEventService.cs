@@ -20,11 +20,13 @@ public class BoxesIntegrationEventService(
     public async Task PublishEventsThroughEventBusAsync(Guid transactionId)
     {
 
+        _logger.LogWarning($"DB Transaction {transactionId} | Starting publishing events");
         var pendingLogEvents = await _eventLogService.RetrieveEventLogsPendingToPublishAsync(transactionId);
-
+        _logger.LogWarning($"DB Transaction {transactionId} | Retrieved events to publish: {pendingLogEvents}, Count: {pendingLogEvents.Count()}");
         foreach (var logEvt in pendingLogEvents)
         {
-            _logger.LogInformation("Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent})", logEvt.EventId, logEvt.IntegrationEvent);
+            _logger.LogInformation("Publishing integration event: {IntegrationEventId} - ({@IntegrationEvent}) || DB Transaction id: {transactionId}", logEvt.EventId, logEvt.IntegrationEvent, transactionId);
+
 
             try
             {

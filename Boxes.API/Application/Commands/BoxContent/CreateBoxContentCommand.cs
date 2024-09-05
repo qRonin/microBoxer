@@ -6,7 +6,7 @@ using System.Xml.Linq;
 namespace Boxes.API.Application.Commands.BoxContent;
 
 [DataContract]
-public record CreateBoxContentCommand : IRequest<bool>
+public record CreateBoxContentCommand : IRequest<BoxContentDTO>
 {
     [DataMember]
     public Guid? BoxId { get; set; }

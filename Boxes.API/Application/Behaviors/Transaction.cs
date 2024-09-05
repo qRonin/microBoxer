@@ -2,6 +2,8 @@
 using Boxes.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Boxes.API.Application.Behaviors;
 
@@ -34,20 +36,24 @@ public class Transaction<TRequest, TResponse> : IPipelineBehavior<TRequest, TRes
 
             await strategy.ExecuteAsync(async () =>
             {
+
                 Guid transactionId;
                 await using var transaction = await _dbContext.BeginTransactionAsync();
+                response = await next();
                 transactionId = transaction.TransactionId;
+                _logger.LogWarning($"DB Transaction {transactionId} started");
 
                 await _dbContext.CommitTransactionAsync(transaction, cancellationToken);
+                _logger.LogWarning($"DB Transaction {transactionId} commited");
                 await _IntegrationEventService.PublishEventsThroughEventBusAsync(transactionId);
 
-                response = await next();
+
             });
 
             return response;
         }
         catch (Exception ex) {
-
+            _logger.LogError(ex, $"Error Handling transaction for {request.GetType()}");
             throw;
         }
     }

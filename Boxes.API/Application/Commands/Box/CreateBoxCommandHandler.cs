@@ -4,9 +4,11 @@ using Boxes.API.Application.IntegrationEvents.Events;
 using Boxes.API.Application.Queries;
 using Boxes.API.Extensions;
 using Boxes.Domain.AggregatesModel.BoxAggregate;
+using Boxes.Infrastructure.Idempotency;
 using MediatR;
 using MicroBoxer.ServiceDefaults;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Xml.Linq;
 
 namespace Boxes.API.Application.Commands.Box;
 
@@ -33,12 +35,14 @@ public class CreateBoxCommandHandler : IRequestHandler<CreateBoxCommand, BoxDTO>
 
     public async Task<BoxDTO> Handle(CreateBoxCommand command, CancellationToken cancellationToken)
     {
+
+
         var boxContents = new List<Domain.AggregatesModel.BoxAggregate.BoxContent>();
-        Domain.AggregatesModel.BoxAggregate.Box box = new Domain.AggregatesModel.BoxAggregate.Box()
-        {
-            BoxName = command.BoxName,
-            BoxContents = boxContents
-        };
+        Domain.AggregatesModel.BoxAggregate.Box box = new Domain.AggregatesModel.BoxAggregate.Box(command.BoxName);
+        //{
+        //    BoxName = command.BoxName,
+        //    BoxContents = boxContents
+        //};
         _boxRepository.Add(box);
         await _boxRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
@@ -46,6 +50,24 @@ public class CreateBoxCommandHandler : IRequestHandler<CreateBoxCommand, BoxDTO>
     }
 
 
+}
+
+// Use for Idempotency in Command process
+public class CreateBoxIdentifiedCommandHandler : IdentifiedCommandHandler<CreateBoxCommand, BoxDTO>
+{
+    public CreateBoxIdentifiedCommandHandler(
+        IMediator mediator,
+        IRequestManager requestManager,
+        ILogger<IdentifiedCommandHandler<CreateBoxCommand, BoxDTO>> logger)
+        : base(mediator, requestManager, logger)
+    {
+    }
+
+    protected override BoxDTO? CreateResultForDuplicateRequest()
+    {
+        //return new BoxDTO(new Guid(), "request already in process fake box name"); // Ignore duplicate requests for creating order.
+        return null;
+    }
 }
 
 public record BoxDTO

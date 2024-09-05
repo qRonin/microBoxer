@@ -10,19 +10,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" Version="8.1.0" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.1.0" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.1.0" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.1.0" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Boxes.API\Boxes.API.csproj" />
     <ProjectReference Include="..\Identity.API\Identity.API.csproj" />
     <ProjectReference Include="..\MicroBoxer.GrpcService\MicroBoxer.GrpcService.csproj" />
     <ProjectReference Include="..\MicroBoxer.Web\MicroBoxer.Web.csproj" />
     <ProjectReference Include="..\Webhook.API\Webhook.API.csproj" />
     <ProjectReference Include="..\Webhook.Client\Webhook.Client.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.1.0" />
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.2.0" />
-    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.2.0" />
-    <PackageReference Include="Aspire.Hosting.Redis" Version="8.2.0" />
   </ItemGroup>
 
 </Project>

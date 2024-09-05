@@ -65,6 +65,19 @@ namespace Boxes.Infrastructure.Migrations
                 name: "IX_BoxContents_BoxId",
                 table: "BoxContents",
                 column: "BoxId");
+
+            migrationBuilder.CreateTable(
+                name: "requests",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_requests", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
@@ -78,6 +91,9 @@ namespace Boxes.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Boxes");
+
+            migrationBuilder.DropTable(
+                name: "requests");
         }
     }
 }

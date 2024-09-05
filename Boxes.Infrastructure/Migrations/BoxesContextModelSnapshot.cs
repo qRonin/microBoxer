@@ -97,6 +97,25 @@ namespace Boxes.Infrastructure.Migrations
                     b.ToTable("IntegrationEventLog", (string)null);
                 });
 
+            modelBuilder.Entity("Boxes.Infrastructure.Idempotency.ClientRequest", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("text");
+
+                b.Property<DateTime>("Time")
+                    .HasColumnType("timestamp with time zone");
+
+                b.HasKey("Id");
+
+                b.ToTable("requests", "ordering");
+            });
+
+
             modelBuilder.Entity("Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent", b =>
                 {
                     b.HasOne("Boxes.Domain.AggregatesModel.BoxAggregate.Box", "Box")

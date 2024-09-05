@@ -7,15 +7,15 @@ namespace Boxes.API.Application.Queries
     public class BoxQueries(BoxesContext context) : IBoxQueries
     {
 
-        public async Task<Box> GetBoxAsync(Guid id)
+        public async Task<BoxVM> GetBoxAsync(Guid id)
         {
             return await context.Boxes
                 .Where(b => b.Id == id)
-                .Select(b => new Box
+                .Select(b => new BoxVM
                 {
                     BoxName = b.BoxName,
                     BoxContents = b.BoxContents
-                    .Select(bc => new BoxContent
+                    .Select(bc => new BoxContentVM
                     {
                         Id = bc.Id,
                         BoxId = bc.BoxId ?? bc.LastKnownBoxId,
@@ -26,14 +26,14 @@ namespace Boxes.API.Application.Queries
 
                 }).FirstOrDefaultAsync();               
         }
-        public async Task<IEnumerable<Box>> GetBoxesAsync()
+        public async Task<IEnumerable<BoxVM>> GetBoxesAsync()
         {
             return await context.Boxes
-                .Select(b => new Box
+                .Select(b => new BoxVM
                 {
                     BoxName = b.BoxName,
                     BoxContents = b.BoxContents                    
-                    .Select(bc => new BoxContent
+                    .Select(bc => new BoxContentVM
                     {
                         Id = bc.Id,
                         BoxId = bc.BoxId ?? bc.LastKnownBoxId,

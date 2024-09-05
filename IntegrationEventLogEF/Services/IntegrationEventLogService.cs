@@ -98,11 +98,11 @@ public class IntegrationEventLogService<TContext> : IIntegrationEventLogService,
             , transaction.TransactionId
             );
 
-        //_context.Database.UseTransaction(transaction.GetDbTransaction());
+        _context.Database.UseTransaction(transaction.GetDbTransaction());
         _context.Set<IntegrationEventLogEntry>().Add(eventLogEntry);
-        _context.SaveChanges();
+        //_context.SaveChanges();
 
-        //return _context.SaveChangesAsync();
-        return Task.CompletedTask;
+        return _context.SaveChangesAsync();
+        //return Task.CompletedTask;
     }
 }
