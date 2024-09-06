@@ -11,6 +11,7 @@ using MediatR;
 using Boxes.Infrastructure.Repositories;
 using System.Data;
 using Boxes.Infrastructure.EntityConfigurations;
+using Boxes.Domain.AggregatesModel.UserAggregate;
 
 namespace Boxes.Infrastructure;
 
@@ -20,21 +21,32 @@ public class BoxesContext : DbContext, IUnitOfWork
     private IDbContextTransaction _currentTransaction;
     public IDbContextTransaction GetCurrentTransaction() => _currentTransaction;                 
     public bool HasActiveTransaction => _currentTransaction != null;
+
+
+    //"Host=localhost;Database=boxesservicedb;Username=postgres;Password=postgres"
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseNpgsql("Host=localhost;Database=boxesservicedb;Username=postgres;Password=postgres");
+
+    
     public BoxesContext(DbContextOptions<BoxesContext> options) : base(options) { }
     public BoxesContext(DbContextOptions<BoxesContext> options, IMediator mediator) : base(options)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + this.GetHashCode());
     }
+    
     public virtual DbSet<Box> Boxes { get; set; }
 
     public virtual DbSet<BoxContent> BoxContents { get; set; }
+
+    //public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //modelBuilder.HasDefaultSchema("boxesservicedb");
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new ClientRequestEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new UserInfoEntityTypeConfiguration());
         modelBuilder.UseIntegrationEventLogs();
     }
 

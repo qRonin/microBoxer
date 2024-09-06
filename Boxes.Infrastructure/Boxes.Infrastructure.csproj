@@ -8,6 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\olderMigrations\**" />
+    <EmbeddedResource Remove="Migrations\olderMigrations\**" />
+    <None Remove="Migrations\olderMigrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20240901002954_initMigration.cs" />
+    <Compile Remove="Migrations\20240901002954_initMigration.Designer.cs" />
+    <Compile Remove="Migrations\20240905221539_userMigration.cs" />
+    <Compile Remove="Migrations\20240905221539_userMigration.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -16,12 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <ProjectReference Include="..\Boxes.Domain\Boxes.Domain.csproj" />
+    <ProjectReference Include="..\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Boxes.Domain\Boxes.Domain.csproj" />
-    <ProjectReference Include="..\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

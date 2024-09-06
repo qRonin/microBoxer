@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Boxes.Infrastructure.Migrations
 {
     [DbContext(typeof(BoxesContext))]
-    [Migration("20240901002954_initMigration")]
-    partial class initMigration
+    [Migration("20240906002713_Migration-UsersBoxesRequests")]
+    partial class MigrationUsersBoxesRequests
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,9 +32,15 @@ namespace Boxes.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("BoxName")
+                        .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Boxes");
                 });
@@ -61,11 +67,53 @@ namespace Boxes.Infrastructure.Migrations
                     b.Property<int?>("OrderNumber")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BoxId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("BoxContents");
+                });
+
+            modelBuilder.Entity("Boxes.Domain.AggregatesModel.UserAggregate.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(200)
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("Boxes.Infrastructure.Idempotency.ClientRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("requests", (string)null);
                 });
 
             modelBuilder.Entity("IntegrationEventLogEF.Model.IntegrationEventLogEntry", b =>
@@ -99,11 +147,26 @@ namespace Boxes.Infrastructure.Migrations
                     b.ToTable("IntegrationEventLog", (string)null);
                 });
 
+            modelBuilder.Entity("Boxes.Domain.AggregatesModel.BoxAggregate.Box", b =>
+                {
+                    b.HasOne("Boxes.Domain.AggregatesModel.UserAggregate.User", null)
+                        .WithMany("UserBoxes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent", b =>
                 {
                     b.HasOne("Boxes.Domain.AggregatesModel.BoxAggregate.Box", "Box")
                         .WithMany("BoxContents")
                         .HasForeignKey("BoxId");
+
+                    b.HasOne("Boxes.Domain.AggregatesModel.UserAggregate.User", null)
+                        .WithMany("UserBoxContents")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Box");
                 });
@@ -111,6 +174,13 @@ namespace Boxes.Infrastructure.Migrations
             modelBuilder.Entity("Boxes.Domain.AggregatesModel.BoxAggregate.Box", b =>
                 {
                     b.Navigation("BoxContents");
+                });
+
+            modelBuilder.Entity("Boxes.Domain.AggregatesModel.UserAggregate.User", b =>
+                {
+                    b.Navigation("UserBoxContents");
+
+                    b.Navigation("UserBoxes");
                 });
 #pragma warning restore 612, 618
         }

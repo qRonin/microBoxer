@@ -33,6 +33,10 @@ using Boxes.Infrastructure.Repositories;
 using Boxes.API.Application.Behaviors;
 using MediatR;
 using Boxes.Infrastructure.Idempotency;
+using MicroBoxer.ServiceDefaults;
+using Boxes.API.Infrastructure.Services;
+using Boxes.Domain.AggregatesModel.UserAggregate;
+using Boxes.API.Infrastructure.Services.IdentityResolver;
 
 namespace Boxes.API.Extensions;
 
@@ -41,6 +45,7 @@ public static class Extensions
 
     public static void AddDefaultServices(this IHostApplicationBuilder builder)
     {
+        builder.AddDefaultAuthentication();
         builder.AddRabbitMqEventBus("eventbus")
             .AddEventBusSubscriptions();
         builder.Services.AddHttpContextAccessor();
@@ -53,10 +58,15 @@ public static class Extensions
 
         builder.Services.AddTransient<IBoxesIntegrationEventService, BoxesIntegrationEventService>();
         builder.Services.AddTransient<IIntegrationEventLogService, IntegrationEventLogService<BoxesContext>>();
+
         builder.Services.AddScoped<IBoxContentQueries, BoxContentQueries>();
         builder.Services.AddScoped<IBoxQueries, BoxQueries>();
         builder.Services.AddScoped<IBoxRepository, BoxRepository>();
         builder.Services.AddScoped<IBoxContentRepository, BoxContentRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+        builder.Services.AddTransient<IIdentityService, IdentityService>();
+        builder.Services.AddTransient<IIdentityResolver, IdentityResolver>();
 
         builder.Services.AddMediatR(cfg =>
         {

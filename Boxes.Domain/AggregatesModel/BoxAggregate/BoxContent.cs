@@ -34,23 +34,28 @@ namespace Boxes.Domain.AggregatesModel.BoxAggregate
         public string? Description { get; set; }
         public Guid? LastKnownBoxId { get; set; }
         public int? OrderNumber { get; set; }
+        [Required]
+        public Guid UserId { get; set; }
+
         public Box? Box { get; set; }
 
-        public BoxContent(string name, string description)
+        public BoxContent(string name, string description, Guid userId)
         {
             Name = !string.IsNullOrWhiteSpace(name) ? name : throw new ArgumentNullException(nameof(name));
             Description = description;
             Box = null;
+            UserId = userId;
             AddBoxContentCreatedDomainEvent();
         }
 
-        public BoxContent(Guid? boxId, string name, string description)
+        public BoxContent(Guid? boxId, string name, string description, Guid userId)
         {
             BoxId = boxId;
             LastKnownBoxId = boxId;
             Name = !string.IsNullOrWhiteSpace(name) ? name : throw new ArgumentNullException(nameof(name));
             Description = description;
             Box = null;
+            UserId = userId;
             AddBoxContentCreatedDomainEvent();
         }
         

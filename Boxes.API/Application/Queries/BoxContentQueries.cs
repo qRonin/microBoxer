@@ -15,6 +15,7 @@ namespace Boxes.API.Application.Queries
                     Name = bc.Name,
                     Description = bc.Description,
                     BoxId = bc.BoxId ?? bc.LastKnownBoxId,
+
                 })
                 .FirstOrDefaultAsync();         
         }

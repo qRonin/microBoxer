@@ -12,16 +12,18 @@ public record CreateBoxCommand : IRequest<BoxDTO>
 {
     [DataMember]
     public Guid Id { get; private set; }
+    public Guid UserId { get; set; }
     [DataMember]
     public string BoxName { get; private set; }
     public List<BoxContentDTO> BoxContents { get; private set; }
 
 
-    public CreateBoxCommand(string BoxName)
+    public CreateBoxCommand(string BoxName, Guid userId)
     {
         this.BoxName = BoxName;
         Id = new Guid();
         BoxContents = new List<BoxContentDTO>();
+        UserId = userId;
     }
 
 

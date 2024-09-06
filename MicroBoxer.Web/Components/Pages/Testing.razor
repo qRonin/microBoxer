@@ -7,6 +7,7 @@
 @attribute [OutputCache(Duration = 5)]
 @inject BoxesService boxesService
 @inject BoxesNotificationService boxesNotificationService
+@inject UserBoxesState userBoxesState
 
 
 <div class="container">
@@ -130,27 +131,27 @@
     {
 
         await base.OnParametersSetAsync();
-        /*if (BoxList.Count == 0)
-        {
-            await AddFirstBox();
-        }
+    /*if (BoxList.Count == 0)
+    {
+        await AddFirstBox();
+    }
 
-        if (BoxList.Count == 1 && BoxList.FirstOrDefault().BoxContents.Count == 0)
+    if (BoxList.Count == 1 && BoxList.FirstOrDefault().BoxContents.Count == 0)
         {
-            await AddFirstContent(boxes.FirstOrDefault().Id);
-        }*/
+        await AddFirstContent(boxes.FirstOrDefault().Id);
+    }*/
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var userId = "1";
-            if (!string.IsNullOrEmpty(userId))
-            {
-                boxesChangedSubscription = boxesNotificationService.SubscribeToBoxesChangesNotifications(
-                userId, () => InvokeAsync(RefreshBoxes));
-            }
+            //var userId = "1";
+            //if (!string.IsNullOrEmpty(userId))
+            //{
+            //boxesChangedSubscription = boxesNotificationService.SubscribeToBoxesChangesNotifications(
+            //userId, () => InvokeAsync(RefreshBoxes));
+            //}
         }
         await base.OnAfterRenderAsync(firstRender);
     }
@@ -158,7 +159,16 @@
     protected override async Task OnInitializedAsync()
     {
 
-        await GetAllBoxes();
+
+        var result = await userBoxesState.GetBoxesAsync();
+        boxes = result.ToList();
+        foreach (var box in boxes)
+        {
+            
+            BoxList.Add(await box.FromRecord());
+        }
+
+        //await GetAllBoxes();
 
         //return base.OnInitializedAsync();
     }

@@ -66,8 +66,8 @@
                     AllowOfflineAccess = true,
                     AllowAccessTokensViaBrowser = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
-                    AccessTokenLifetime = 60*60*2, // 2 hours
-                    IdentityTokenLifetime= 60*60*2 // 2 hours
+                    AccessTokenLifetime =  60*2, //60*60*2, // 2 hours
+                    IdentityTokenLifetime= 60*2//60*60*2 // 2 hours
                 },
                 new Client
                 {
@@ -100,8 +100,8 @@
                         "boxes",
                         "webhooks"
                     },
-                    AccessTokenLifetime = 60*60*2, // 2 hours
-                    IdentityTokenLifetime= 60*60*2 // 2 hours
+                    AccessTokenLifetime = 60*2,//60*60*2, // 2 hours
+                    IdentityTokenLifetime= 60*2//60*60*2 // 2 hours
                 },
                 new Client
                 {
@@ -132,8 +132,8 @@
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                         "webhooks"
                     },
-                    AccessTokenLifetime = 60*60*2, // 2 hours
-                    IdentityTokenLifetime= 60*60*2 // 2 hours
+                    AccessTokenLifetime = 60*2,//60*60*2, // 2 hours
+                    IdentityTokenLifetime= 60*2//60*60*2 // 2 hours
                 },
                 new Client
                 {

@@ -31,8 +31,9 @@ public class CreateBoxContentCommandHandler : IRequestHandler<CreateBoxContentCo
 
     public async Task<BoxContentDTO> Handle(CreateBoxContentCommand command, CancellationToken cancellationToken)
     {
+        _logger.LogInformation($"Creating Box from command for User: {command.UserId}");
         Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent content =
-            new Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent(command.BoxId, command.Name, command.Description);
+            new Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent(command.BoxId, command.Name, command.Description, command.UserId);
         //{
         //    BoxId = command.BoxId,
         //    Description = command.Description,

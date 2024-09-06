@@ -12,6 +12,7 @@ namespace Boxes.Domain.AggregatesModel.BoxAggregate
         Box Add(Box box);
         Task<Box> GetAsync(Guid id);
         Task<IEnumerable<Box>> GetAsync();
+        Task<IEnumerable<Box>> GetByUserAsync(Guid userId);
         bool Delete(Guid id);
         Box Update(Box box);
 

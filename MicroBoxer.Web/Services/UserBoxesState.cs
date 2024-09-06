@@ -1,9 +1,29 @@
 ﻿using MicroBoxer.Web.Services.ViewModel;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 
 namespace MicroBoxer.Web.Services;
 
-public class UserBoxesState
+public class UserBoxesState(
+    BoxesService boxesService,
+    AuthenticationStateProvider authenticationStateProvider
+    ) : IUserBoxesState
 {
+    public async Task<IReadOnlyCollection<BoxRecord>> GetBoxesAsync()
+    => (await GetUserAsync()).Identity?.IsAuthenticated == true
+    ? await boxesService.GetBoxes()
+    : [];
+
+    public async Task<BoxRecord?> GetBoxAsync(Guid id)
+    => (await GetUserAsync()).Identity?.IsAuthenticated == true
+    ? await boxesService.GetBox(id)
+    : null;
+
+
+
+
+    private async Task<ClaimsPrincipal> GetUserAsync()
+    => (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
 }
 
 

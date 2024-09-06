@@ -22,4 +22,8 @@
     <ProjectReference Include="..\MicroBoxer.ServiceDefaults\MicroBoxer.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Pages\Boxes\" />
+  </ItemGroup>
+
 </Project>

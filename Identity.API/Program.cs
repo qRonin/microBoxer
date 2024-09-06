@@ -33,7 +33,7 @@ builder.Services.AddIdentityServer(options =>
 .AddInMemoryApiResources(Config.GetApis())
 .AddInMemoryClients(Config.GetClients(builder.Configuration))
 .AddAspNetIdentity<ApplicationUser>()
-// TODO: Not recommended for production - you need to store your key material somewhere secure
+// Not recommended for production - you need to store your key material somewhere secure
 .AddDeveloperSigningCredential();
 
 builder.Services.AddTransient<IProfileService, ProfileService>();

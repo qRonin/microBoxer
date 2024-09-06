@@ -48,5 +48,10 @@ namespace Boxes.Infrastructure.Repositories
             _boxContext.BoxContents.Remove(content);
             return true;
         }
+
+        public Task<IEnumerable<BoxContent>> GetByUserAsync(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

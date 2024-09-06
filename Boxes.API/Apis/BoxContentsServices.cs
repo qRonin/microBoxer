@@ -1,4 +1,5 @@
 ﻿using Boxes.API.Application.Queries;
+using Boxes.API.Infrastructure.Services;
 using MediatR;
 
 namespace Boxes.API.Apis;
@@ -6,11 +7,11 @@ namespace Boxes.API.Apis;
 public class BoxContentsServices(
     IMediator mediator,
     IBoxContentQueries queries,
-    //IIdentityService identityService,
+    IIdentityService identityService,
     ILogger<BoxesServices> logger)
 {
     public IMediator Mediator { get; set; } = mediator;
     public ILogger<BoxesServices> Logger { get; } = logger;
     public IBoxContentQueries Queries { get; } = queries;
-    //public IIdentityService IdentityService { get; } = identityService;
+    public IIdentityService IdentityService { get; } = identityService;
 }

@@ -25,6 +25,7 @@
     <ProjectReference Include="..\Boxes.Domain\Boxes.Domain.csproj" />
     <ProjectReference Include="..\Boxes.Infrastructure\Boxes.Infrastructure.csproj" />
     <ProjectReference Include="..\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+    <ProjectReference Include="..\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
     <ProjectReference Include="..\MicroBoxer.ServiceDefaults\MicroBoxer.ServiceDefaults.csproj" />
   </ItemGroup>
 

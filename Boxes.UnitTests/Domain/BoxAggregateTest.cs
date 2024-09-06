@@ -20,8 +20,9 @@ public class BoxAggregateTest
     {
         //Arrange    
         var name = "fake Box";
+        var ownerId = Guid.NewGuid();
         //Act 
-        var fakeBox = new Box(name);
+        var fakeBox = new Box(name, ownerId);
         //Assert
         Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(fakeBox);       
     }
@@ -32,8 +33,9 @@ public class BoxAggregateTest
         //Arrange    
         var name = "fake Box";
         var expectedEventsCount = 2;
+        var ownerId = Guid.NewGuid();
         //Act 
-        var fakeBox = new Box(name);
+        var fakeBox = new Box(name, ownerId);
         fakeBox.BoxName = "new name";
         fakeBox.AddBoxUpdatedDomainEvent();
         //Assert
@@ -45,8 +47,9 @@ public class BoxAggregateTest
         //Arrange    
         var name = "fake Box";
         var expectedEventsCount = 2;
+        var ownerId = Guid.NewGuid();
         //Act 
-        var fakeBox = new Box(name);
+        var fakeBox = new Box(name, ownerId);
         fakeBox.AddBoxDeletedDomainEvent();
         //Assert
         Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(fakeBox.DomainEvents.Count, expectedEventsCount);

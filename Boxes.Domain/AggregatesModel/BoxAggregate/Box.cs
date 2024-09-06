@@ -29,13 +29,15 @@ namespace Boxes.Domain.AggregatesModel.BoxAggregate
         [Required]
         public string? BoxName { get; set; }
         public List<BoxContent> BoxContents { get; set; }
+        [Required]
+        public Guid UserId { get; set; }
 
-
-        public Box(string boxName)
+        public Box(string boxName, Guid userId)
         {
 
             BoxName = !string.IsNullOrWhiteSpace(boxName)  ? boxName : throw new ArgumentNullException(nameof(boxName));
             BoxContents = new List<BoxContent>();
+            UserId = userId;
             AddBoxCreatedDomainEvent();
         }
 

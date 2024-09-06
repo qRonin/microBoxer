@@ -35,7 +35,8 @@ namespace Boxes.API.Apis
             {
                 if (id != null)
                 {
-
+                    var userId = services.IdentityService.GetUserIdentity();
+                    services.Logger.LogInformation($"UserId From the Request: {userId}");
                     var boxContent = await services.Queries.GetBoxContent((Guid)id);
                     return TypedResults.Ok(boxContent);
                 }
@@ -54,6 +55,8 @@ namespace Boxes.API.Apis
             {
                 if (boxId != null)
                 {
+                    var userId = services.IdentityService.GetUserIdentity();
+                    services.Logger.LogInformation($"UserId From the Request: {userId}");
                     var boxContents = await services.Queries.GetBoxContentsByBoxId((Guid)boxId);
                     return TypedResults.Ok(boxContents);
                 }
@@ -72,8 +75,10 @@ namespace Boxes.API.Apis
             {
                 if (id!=null)
                 {
-                    
-                    var box = await services.Queries.GetBoxAsync((Guid)id);
+                    var userId = services.IdentityService.GetUserIdentity();
+                    services.Logger.LogInformation($"UserId From the Request: {userId}");
+
+                    var box = await services.BoxesQueries.GetBoxAsync((Guid)id);
                     return TypedResults.Ok(box);
                 }
                 else return TypedResults.NotFound();
@@ -89,7 +94,9 @@ namespace Boxes.API.Apis
         {
             try
             {
-                var boxes = await services.Queries.GetBoxesAsync();
+                var userId = services.IdentityService.GetUserIdentity();
+                services.Logger.LogInformation($"UserId From the Request: {userId}");
+                var boxes = await services.BoxesQueries.GetBoxesAsync();
                 return TypedResults.Ok(boxes);
             }
             catch
@@ -133,6 +140,9 @@ namespace Boxes.API.Apis
         {
             if (requestId == Guid.Empty) return TypedResults.BadRequest("requestId cannot be Empty");
 
+            var userId = services.IdentityService.GetUserIdentity();
+            services.Logger.LogInformation($"UserId From the Request: {userId}");
+
             var updateBoxCommand = new UpdateBoxCommand(
                 Guid.Parse(request.id), request.boxName, request.boxContents
                 );
@@ -153,8 +163,11 @@ namespace Boxes.API.Apis
             [AsParameters] BoxesServices services)
         {
             if (requestId == Guid.Empty) return TypedResults.BadRequest("requestId cannot be Empty");
+             
+            var userId = await services.IdentityService.GetUserIdentity();           
+            services.Logger.LogInformation($"UserId From the Request: {userId}");
 
-            var createBoxCommand = new CreateBoxCommand(request.BoxName);
+            var createBoxCommand = new CreateBoxCommand(request.BoxName, Guid.Parse(userId));
 
             var requestCreateBox = new IdentifiedCommand<CreateBoxCommand, BoxDTO>(createBoxCommand, requestId);
 
@@ -180,6 +193,9 @@ namespace Boxes.API.Apis
             [AsParameters] BoxesServices services)
         {
             if (requestId == Guid.Empty) return TypedResults.BadRequest("requestId cannot be Empty");
+
+            var userId = services.IdentityService.GetUserIdentity();
+            services.Logger.LogInformation($"UserId From the Request: {userId}");
 
 
             bool result;
@@ -213,9 +229,12 @@ namespace Boxes.API.Apis
         {
             if (requestId == Guid.Empty) return TypedResults.BadRequest("requestId cannot be Empty");
 
+            var userId = services.IdentityService.GetUserIdentity();
+            services.Logger.LogInformation($"UserId From the Request: {userId}");
+
             var deleteBoxContentCommand = new DeleteBoxContentCommand(Guid.Parse(request.Id));
 
-           var result = await DeleteContent(deleteBoxContentCommand, services);
+            var result = await DeleteContent(deleteBoxContentCommand, services);
 
             if (result)
             {
@@ -235,6 +254,9 @@ namespace Boxes.API.Apis
             [AsParameters] BoxesServices services)
         {
             if (requestId == Guid.Empty) return TypedResults.BadRequest("requestId cannot be Empty");
+
+            var userId = services.IdentityService.GetUserIdentity();
+            services.Logger.LogInformation($"UserId From the Request: {userId}");
 
             var updateBoxContentCommand = new UpdateBoxContentCommand(request.Name, request.Description,
                  Guid.Parse(request.BoxId), Guid.Parse(request.Id));
@@ -260,8 +282,11 @@ namespace Boxes.API.Apis
         {
             if(requestId == Guid.Empty) return TypedResults.BadRequest("requestId cannot be Empty");
 
+            var userId = await services.IdentityService.GetUserIdentity();
+            services.Logger.LogInformation($"UserId From the Request: {userId}");
+
             var createBoxContentCommand = new CreateBoxContentCommand(request.Name, request.Description,
-                 Guid.Parse(request.BoxId));
+                 Guid.Parse(request.BoxId), Guid.Parse(userId));
 
             var requestCreateBoxContent = new IdentifiedCommand<CreateBoxContentCommand, BoxContentDTO>(createBoxContentCommand, requestId);
 
