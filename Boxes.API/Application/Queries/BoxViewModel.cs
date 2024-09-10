@@ -7,4 +7,6 @@ public record BoxVM
     public Guid Id { get; set; }
     public IEnumerable<BoxContentVM> BoxContents { get; set; }
 
+    public Guid UserId { get; set; }
+
 }

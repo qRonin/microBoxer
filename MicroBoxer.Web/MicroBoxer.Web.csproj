@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\Pages\User\BoxContents.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http.Client" Version="8.1.0" />
     <PackageReference Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.65.0" />
     <PackageReference Include="Grpc.Tools" Version="2.66.0">
@@ -15,6 +19,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="8.2.0" />
+    <PackageReference Include="MudBlazor" Version="7.8.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +28,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Pages\Boxes\" />
+    <UpToDateCheckInput Remove="Components\Pages\User\BoxContents.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Pages\User\BoxContents.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\Pages\Boxes\BoxContents.razor" />
   </ItemGroup>
 
 </Project>

@@ -6,13 +6,14 @@
 @inject LogOutService LogOutService
 @inject NavigationManager Nav
 
+<div class="user-menu">
 <AuthorizeView>
     <Authorized>
-        <h3>@context.User.Identity?.Name</h3>
+        <h3 class="h3">@context.User.Identity?.Name</h3>
         <div class="dropdown-menu">
-            <span class="dropdown-button"><img role="presentation" src="icons/user.svg" /></span>
-            <div class="dropdown-content">
-                <a class="dropdown-item" href="user/boxes">My Boxes</a>
+            <span class="dropdown-button"><img role="presentation" src="icons/user.svg" class="user-icon" /></span>
+            <div class="dropdown-content" data-bs-theme="dark">
+                <a class="dropdown-item" href="/user/boxes">My Boxes</a>
                 <form class="dropdown-item" method="post" action="user/logout" @formname="logout" @onsubmit="LogOutAsync">
                     <AntiforgeryToken />
                     <button type="submit">Log out</button>
@@ -21,9 +22,10 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <a aria-label="Sign in" href="@Pages.User.LogIn.Url(Nav)"><img role="presentation" src="icons/user.svg" /></a>
+            <a aria-label="Sign in" href="@Pages.User.LogIn.Url(Nav)"><img role="presentation" src="icons/user.svg" class="user-icon" /></a>
     </NotAuthorized>
 </AuthorizeView>
+</div>
 
 @code {
     [CascadingParameter]
@@ -31,4 +33,10 @@
 
     private Task LogOutAsync()
         => LogOutService.LogOutAsync(HttpContext!);
+
+    /*protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        Nav.NavigateTo(Pages.User.LogIn.Url(Nav));
+    }*/
 }

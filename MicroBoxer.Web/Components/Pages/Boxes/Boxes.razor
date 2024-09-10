@@ -1,0 +1,54 @@
+﻿@page "/user/boxes"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Authorization
+@using MicroBoxer.Web.Services.ViewModel
+@using MicroBoxer.Web.Extensions
+@using MicroBoxer.Web.Services
+@inject NavigationManager Nav
+@inject BoxesService boxesService
+@inject BoxesNotificationService boxesNotificationService
+@inject UserBoxesState userBoxesState
+
+<AuthorizeView>
+    <Authorized>
+        <div class="row boxlist h-100 py-5">
+            <div class="container">
+            @foreach(var box in BoxList)
+            {
+                    <div class="boxitem">
+                        <MicroBoxer.Web.Components.Box.BoxComponent Box="@box" />
+                    </div>
+            }
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>Unauthorized</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public List<Box> BoxList { get; set; } = new List<Box>();
+    public List<int> boxesDummy { get; set; } = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    15, 16 ,17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await GetBoxes();
+    }
+    public async Task GetBoxes()
+    {
+        var result = await userBoxesState.GetBoxesAsync();
+        var boxes = result.ToList();
+        foreach (var box in boxes)
+        {
+
+            BoxList.Add(await box.FromRecord());
+        }
+    }
+
+}

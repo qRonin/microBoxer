@@ -8,6 +8,6 @@ public record BoxContentVM
     public string Description { get; set; }
     public Guid Id { get; set; }
     public Guid? BoxId { get; set; }
-
+    public Guid UserId { get; set; }
 
 }

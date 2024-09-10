@@ -1,8 +1,19 @@
-.page {
-    position: relative;
+div.page {
+    /*position: relative;*/
     display: flex;
     flex-direction: column;
+    background-color: #343a40;
 }
+
+div.cover-container {
+    background-color: #343a40;
+}
+
+
+div.page-item {
+
+}
+
 
 main {
     flex: 1;
@@ -47,8 +58,10 @@ main {
 }
 
 @media (min-width: 641px) {
-    .page {
-        flex-direction: row;
+    div.page {
+        /*position: relative;*/
+        display: flex;
+        flex-direction: column;
     }
 
     .sidebar {

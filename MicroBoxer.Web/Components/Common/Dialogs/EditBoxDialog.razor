@@ -1,0 +1,69 @@
+﻿@using MicroBoxer.Web.Services.ViewModel
+
+<Dialog @ref="dialog">
+    <div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header p-5 pb-4 border-bottom-0">
+                    <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="() => Confirm(false)"></button>
+                </div>
+
+                <div class="modal-body p-5 pt-0">
+                    <form class="" @onsubmit="() => Confirm(true)">
+                        <div class="form-floating mb-3">
+                            <input class="form-control rounded-3" id="floatingBoxName"
+                            @bind-value="@Box.BoxName" @bind-value:event="oninput" placeholder="Box name..." />
+                            <label for="floatingBoxName">BoxName:</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control rounded-3" id="floatingId"
+                            @bind-value="@Box.Id" @bind-value:event="oninput" placeholder="Box id..." />
+                            <label for="floatingId">BoxId:</label>
+                        </div>
+                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</Dialog>
+
+@code {
+    private Dialog dialog;
+    [Parameter]
+    public Box Box { get; set; }
+    [Parameter]
+    public EventCallback<(bool, Box)> onConfirm { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Box = Box == null ? new Box() : Box;
+    }
+
+
+    private async Task Confirm(bool action)
+    {
+        await onConfirm.InvokeAsync((action, Box));
+        await dialog.CloseDialogAsync();
+    }
+
+    private async Task Dispose()
+    {
+        await dialog.CloseDialogAsync();
+        await dialog.DisposeAsync();
+    }
+
+    public async Task Show()
+    {
+        await dialog.ShowDialogAsync();
+        StateHasChanged();
+    }
+    public async Task Close()
+    {
+        await dialog.CloseDialogAsync();
+        StateHasChanged();
+    }
+}

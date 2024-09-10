@@ -64,12 +64,12 @@ namespace Boxes.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Boxes", x => x.Id);
-                    table.ForeignKey(
+                    /*table.ForeignKey(
                         name: "FK_Boxes_users_UserId",
                         column: x => x.UserId,
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade);*/
                 });
 
             migrationBuilder.CreateTable(
@@ -92,12 +92,12 @@ namespace Boxes.Infrastructure.Migrations
                         column: x => x.BoxId,
                         principalTable: "Boxes",
                         principalColumn: "Id");
-                    table.ForeignKey(
+                    /*table.ForeignKey(
                         name: "FK_BoxContents_users_UserId",
                         column: x => x.UserId,
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade);*/
                 });
 
             migrationBuilder.CreateIndex(

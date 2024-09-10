@@ -2,12 +2,16 @@ using MicroBoxer.ServiceDefaults;
 using MicroBoxer.Web;
 using MicroBoxer.Web.Components;
 using MicroBoxer.Web.Extensions;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
 builder.AddApplicationServices();
+
+
+builder.Services.AddMudServices();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

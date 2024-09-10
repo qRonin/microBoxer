@@ -66,7 +66,7 @@ public static class Extensions
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
         builder.Services.AddTransient<IIdentityService, IdentityService>();
-        builder.Services.AddTransient<IIdentityResolver, IdentityResolver>();
+        //builder.Services.AddTransient<IIdentityResolver, IdentityResolver>();
 
         builder.Services.AddMediatR(cfg =>
         {

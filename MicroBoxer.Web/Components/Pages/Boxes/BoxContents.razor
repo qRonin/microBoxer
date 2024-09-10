@@ -1,0 +1,36 @@
+﻿@page "/user/boxcontents"
+@using MicroBoxer.Web.Services.ViewModel
+@using Microsoft.AspNetCore.Components.Authorization
+@rendermode InteractiveServer
+
+<AuthorizeView>
+    <Authorized>
+        <div class="row contentlist h-100 py-5">
+            <div class="container">
+                @foreach (var content in BoxContentsList)
+            {
+                    <div class="contentitem">
+                        <MicroBoxer.Web.Components.Box.BoxContent.BoxContentComponent BoxContent="content"/>
+                    </div>
+            }
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>Unauthorized</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+@code {
+    [Parameter]
+    public static List<BoxContent> BoxContentsList { get; set; }
+
+    public static string Url(NavigationManager nav, List<BoxContent> boxContentsList)
+    {
+        BoxContentsList = boxContentsList;
+        return $"/user/boxcontents?returnUrl={Uri.EscapeDataString(nav.ToBaseRelativePath(nav.Uri))}";
+    }
+
+}

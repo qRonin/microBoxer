@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+
+<header class="p-3 border-bottom header">
+        <div class="flex-row-item">
+            <MicroBoxer.Web.Components.Layout.UserMenu />
+        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="flex-row-item">
+                    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                        </form>
+                    </div>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+</header>
+
+@code {
+
+}

@@ -1,65 +1,41 @@
 ﻿@rendermode InteractiveServer
 @implements IDisposable
+@using MicroBoxer.Web.Components.Common.Dialogs
 @using MicroBoxer.Web.Services
 @using MicroBoxer.Web.Services.ViewModel
 @inject BoxesService boxesService
+@inject UserBoxesState userBoxesState
+@page "/testing/boxcontent"
 
-<div class="single-content">
-    <div class="content-item">
-        <div class="content-item-optionbar">
-        </div>
-    </div>
-    <div class="content-item">
-        <div class="content-item-data">
-
-        @if(!EditMode){
-                <div class="content-not-editable">
-                    <label class="normal" for="ContentName">Content Name:</label>
-                    <p class="p-content-contentname">@BoxContent.Name </p>
-
-                    <label class="normal" for="ContentDescription">Content Description:</label>
-                    <p class="p-content-contentdescription">@BoxContent.Description </p>
-
-                    <label class="normal" for="BoxId">Box Id:</label>
-                    <p class="p-content-boxid">@BoxContent.BoxId </p>
-
-                    <label class="normal" for="Id">Content Id:</label>
-                    <p class="p-content-id">@BoxContent.Id </p>
+<div class="row box">
+    <div class="col">
+        <div class="card shadow-sm">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>@BoxContent.Name</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em">@BoxContent.Name</text></svg>
+            <div class="card-body">
+                <p class="card-text">@BoxContentDesc</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="ShowEditDialog">Edit Content</button>
+                    </div>
                 </div>
-            }
-            else
-            {
-                <div class="content-editable">
-                    <label class="normal" for="ContentName">Content Name:</label>
-                    <input id="ContentName" @bind-value="@BoxContent.Name" />
-
-                    <label class="normal" for="ContentDescription">Content Description:</label>
-                    <input id="ContentDescription" @bind-value="@BoxContent.Description" />
-
-                    <label class="normal" for="BoxId">Box Id:</label>
-                    <input id="BoxId" @bind-value="@BoxContent.BoxId" />
-
-                    <label class="normal" for="Id">Content Id:</label>
-                    <input id="Id" @bind-value="@BoxContent.Id" />
-                    <button @onclick="SaveChanges">Save Content Changes </button>
-                </div>
-            }
-
-
-
+            </div>
         </div>
-
     </div>
 </div>
+<MicroBoxer.Web.Components.Common.Dialogs.EditBoxContentDialog @ref="editDialog" BoxContent="BoxContent"
+onConfirm="(args) => EditBoxContentCallback(args.Item1, args.Item2)" />
 
 
-
+<MicroBoxer.Web.Components.Common.Dialogs.ConfirmDialog @ref="confirmDialog" />
 
 
 @code {
     public bool EditMode { get; set; } = true;
     [Parameter]
     public BoxContent BoxContent { get; set; }
+    public string BoxContentDesc => BoxContent.Name + "\n" + BoxContent.Description;
+    private EditBoxContentDialog editDialog;
+    private ConfirmDialog confirmDialog;
 
     public void Dispose()
     {
@@ -72,13 +48,31 @@
     {
         try
         {
-            var request = new UpdateBoxContentRequest(boxId.ToString(), name, description, id.ToString());
-            var result = await boxesService.UpdateBoxContent(request, Guid.NewGuid());
+            var result = await userBoxesState.UpdateBoxContentAsync(boxId, name, description, id);
             Console.WriteLine(result);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+        }
+    }
+    public async Task ShowEditDialog()
+    {
+        editDialog.Show();
+    }
+    public async Task EditBoxContentCallback(bool action, BoxContent boxContent)
+    {
+        if (!action)
+        {
+            return;
+        }
+        else
+        {
+            //BoxContent.Id = boxContent.Id;
+            //BoxContent.BoxId = boxContent.BoxId;
+            //BoxContent.Name = boxContent.Name;
+            //BoxContent.Description = boxContent.Description;
+            await SendUpdateBoxContentRequest(boxContent.BoxId, boxContent.Name, boxContent.Description, boxContent.Id);
         }
     }
 }

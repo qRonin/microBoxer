@@ -1,9 +1,22 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <UserMenu />
-    @Body
+<div class="page cover-container h-100 ">
+    <div class="page-item">
+        <MicroBoxer.Web.Components.Common.AppHeader />
+    </div>
+    <div class="page-item">
+        @Body
+    </div>
 </div>
+
+@* 
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+*@
+
+
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

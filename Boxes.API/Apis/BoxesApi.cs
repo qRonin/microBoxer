@@ -35,9 +35,11 @@ namespace Boxes.API.Apis
             {
                 if (id != null)
                 {
-                    var userId = services.IdentityService.GetUserIdentity();
+                    var userId = await services.IdentityService.GetUserIdentity();
                     services.Logger.LogInformation($"UserId From the Request: {userId}");
-                    var boxContent = await services.Queries.GetBoxContent((Guid)id);
+                    //var boxContent = await services.Queries.GetBoxContent((Guid)id);
+                    var boxContent = await services.Queries.GetBoxContent((Guid)id,Guid.Parse(userId));
+
                     return TypedResults.Ok(boxContent);
                 }
                 else return TypedResults.NotFound();
@@ -55,9 +57,10 @@ namespace Boxes.API.Apis
             {
                 if (boxId != null)
                 {
-                    var userId = services.IdentityService.GetUserIdentity();
+                    var userId = await services.IdentityService.GetUserIdentity();
                     services.Logger.LogInformation($"UserId From the Request: {userId}");
-                    var boxContents = await services.Queries.GetBoxContentsByBoxId((Guid)boxId);
+                    //var boxContents = await services.Queries.GetBoxContentsByBoxId((Guid)boxId);
+                    var boxContents = await services.Queries.GetBoxContentsByBoxId((Guid)boxId,Guid.Parse(userId));
                     return TypedResults.Ok(boxContents);
                 }
                 else return TypedResults.NotFound();
@@ -75,10 +78,11 @@ namespace Boxes.API.Apis
             {
                 if (id!=null)
                 {
-                    var userId = services.IdentityService.GetUserIdentity();
+                    var userId = await services.IdentityService.GetUserIdentity();
                     services.Logger.LogInformation($"UserId From the Request: {userId}");
 
-                    var box = await services.BoxesQueries.GetBoxAsync((Guid)id);
+                    //var box = await services.BoxesQueries.GetBoxAsync((Guid)id);
+                    var box = await services.BoxesQueries.GetBoxAsync((Guid)id,Guid.Parse(userId));
                     return TypedResults.Ok(box);
                 }
                 else return TypedResults.NotFound();
@@ -94,9 +98,10 @@ namespace Boxes.API.Apis
         {
             try
             {
-                var userId = services.IdentityService.GetUserIdentity();
+                var userId = await services.IdentityService.GetUserIdentity();
                 services.Logger.LogInformation($"UserId From the Request: {userId}");
-                var boxes = await services.BoxesQueries.GetBoxesAsync();
+                //var boxes = await services.BoxesQueries.GetBoxesAsync(Guid.Parse(userId));
+                var boxes = await services.BoxesQueries.GetUserBoxesAsync(Guid.Parse(userId));
                 return TypedResults.Ok(boxes);
             }
             catch

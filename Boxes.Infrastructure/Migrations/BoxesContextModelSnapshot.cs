@@ -146,11 +146,11 @@ namespace Boxes.Infrastructure.Migrations
 
             modelBuilder.Entity("Boxes.Domain.AggregatesModel.BoxAggregate.Box", b =>
                 {
-                    b.HasOne("Boxes.Domain.AggregatesModel.UserAggregate.User", null)
+                    /*b.HasOne("Boxes.Domain.AggregatesModel.UserAggregate.User", null)
                         .WithMany("UserBoxes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired();*/
                 });
 
             modelBuilder.Entity("Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent", b =>
@@ -159,11 +159,11 @@ namespace Boxes.Infrastructure.Migrations
                         .WithMany("BoxContents")
                         .HasForeignKey("BoxId");
 
-                    b.HasOne("Boxes.Domain.AggregatesModel.UserAggregate.User", null)
+                    /*b.HasOne("Boxes.Domain.AggregatesModel.UserAggregate.User", null)
                         .WithMany("UserBoxContents")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired();*/
 
                     b.Navigation("Box");
                 });

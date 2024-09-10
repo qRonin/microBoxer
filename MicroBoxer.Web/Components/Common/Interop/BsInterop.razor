@@ -1,0 +1,73 @@
+﻿@rendermode InteractiveServer
+
+
+
+@code {
+
+    IJSObjectReference JsReference { get; set; }
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+
+
+    /*
+    private readonly Lazy<Task<IJSObjectReference>> moduleTask;
+        public BsInterop()
+        {
+        moduleTask = new(() => JSRuntime.InvokeAsync<IJSObjectReference>(
+        identifier: "import",
+        args: "./js/dialogJs.js")
+        .AsTask());
+    }*/
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+
+    }
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        await InitJS();
+    }
+
+    public async Task InitJS()
+    {
+        JsReference = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/color-modes.js");
+    }
+
+    public async Task<string> GetJsValue()
+    {
+        var result = await JsReference.InvokeAsync<string>("getStoredTheme", null);
+        var result1 = await JsReference.InvokeAsync<string>("setStoredTheme", "dark");
+        Console.WriteLine($"val: {result} val1: {result1}");
+
+        return String.Concat("res: ",result, " res1:", result1);
+    }
+
+    /*
+    private readonly Lazy<Task<IJSObjectReference>> moduleTask;
+    private ElementReference dialogElement;
+    private bool visible = false;
+
+    public Dialog()
+    {
+    moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
+        identifier: "import",
+    args: "./js/dialogJs.js")
+    .AsTask());
+    }
+
+    [Inject]
+    private IJSRuntime jsRuntime { get; set; }
+    */
+    /*
+    IJSObjectReference scannerJsReference;
+    scannerJsReference = await JS.InvokeAsync<IJSObjectReference>("import", "./js/contentList.js");
+    result = await scannerJsReference.InvokeAsync<string>("StartAndWaitForData", "videoFeed", DotNetObjectReference.Create(this));
+    await scannerJsReference.InvokeVoidAsync("getfocus", content.Id);
+
+    */
+}

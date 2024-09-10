@@ -1,7 +1,66 @@
 ﻿@page "/"
+@using MicroBoxer.Web.Components.Common.Interop
+@using MicroBoxer.Web.Extensions
+@using MicroBoxer.Web.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@rendermode InteractiveServer
+@inject BoxesService boxesService
+@inject NavigationManager Nav
 
-<PageTitle>Home</PageTitle>
+<div class="home-page" data-bs-theme="light">
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+    <PageTitle>Home</PageTitle>
+
+
+ <AuthorizeView>
+        <Authorized>
+            <MicroBoxer.Web.Components.Common.Interop.BsInterop @ref="jsInterop" />
+        </Authorized>
+        <NotAuthorized>
+
+
+        </NotAuthorized>
+</AuthorizeView>
+
+</div>
+
+@code{
+    BsInterop jsInterop;
+    IJSObjectReference JsReference { get; set; }
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        //@Pages.User.LogIn.Url(Nav)
+    }
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        Nav.NavigateTo(Pages.User.LogIn.Url(Nav));
+        await InitJS();
+        await GenerateData();
+    }
+
+    public async Task InitJS()
+    {
+        JsReference = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/color-modes.js");
+    }
+
+    public async Task<string> GetJsValue()
+    {
+        var resulttest = await JsReference.InvokeAsync<string>("test", null);
+        var result = await JsReference.InvokeAsync<string>("getStoredTheme", null);
+        var result1 = await JsReference.InvokeAsync<string>("setStoredTheme", "dark");
+        return "";
+    }
+    public async Task GenerateData()
+    {
+        await boxesService.GenerateBoxes(1, 1);
+    }
+
+}
+

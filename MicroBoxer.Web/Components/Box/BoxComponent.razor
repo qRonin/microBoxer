@@ -1,51 +1,43 @@
-﻿@using MicroBoxer.Web.Services
+﻿@using MicroBoxer.Web.Components.Common.Dialogs
+@using MicroBoxer.Web.Services
 @using MicroBoxer.Web.Services.ViewModel
 @rendermode InteractiveServer
 @implements IDisposable
 @inject BoxesService boxesService
+@inject UserBoxesState userBoxesState
+@page "/testing/box"
+@inject NavigationManager Nav
 
-<div class="single-box">
-    <div class="box-item">
-        <div class="box-item-optionbar">
-        </div>
-    </div>
-    <div class="box-item">
-        <div class="box-item-data">
-            <p>@Box.BoxContents.Count</p>
-            @if (!EditMode)
-            {
-                <div class="box-not-editable">
-                    <label class="normal" for="BoxName">Box Name:</label>
-                    <p class="p-content-boxname">@Box.BoxName </p>
-                    <label class="normal" for="Id">BoxId:</label>
-                    <p class="p-content-id">@Box.Id </p>
+      <div class="row box">
+        <div class="col">
+          <div class="card shadow-sm">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>@Box.BoxName</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em">@Box.BoxName</text></svg>
+            <div class="card-body">
+              <p class="card-text">@BoxDesc</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="CheckBoxContents">Peek Inside</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="ShowEditDialog">Edit Box</button>
                 </div>
-            }
-            else
-            {
-                <div class="box-editable">
-                    <label class="normal" for="BoxName">BoxName:</label>
-                    <input id="BoxName"  @bind-value="@Box.BoxName"/>
-                    <label class="normal" for="Id">BoxId:</label>
-                    <input id="Id" @bind-value="@Box.Id"/>
-                    <button @onclick="SaveChanges">Save Box Changes </button>
-                </div>
-            }
-
-            @foreach (var content in Box.BoxContents)
-            {
-                <MicroBoxer.Web.Components.Box.BoxContent.BoxContentComponent BoxContent="@content"/>
-
-            }
+                <small class="text-body-secondary">@Box.BoxContents.Count Contents</small>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+<MicroBoxer.Web.Components.Common.Dialogs.EditBoxDialog @ref="editDialog" Box="Box"
+onConfirm="(args) => EditBoxCallback(args.Item1, args.Item2)" />
 
-    </div>
-</div>
+<MicroBoxer.Web.Components.Common.Dialogs.ConfirmDialog @ref="confirmDialog" />
 
 @code{
     public bool EditMode { get; set; } = true;
     [Parameter]
     public Box Box { get; set; }
+    public string BoxDesc => Box.BoxName + "\n" + Box.Id;
+    private EditBoxDialog editDialog;
+    private ConfirmDialog confirmDialog;
+
 
     public void Dispose()
     {
@@ -62,8 +54,7 @@
     {
         try
         {
-            var request = new UpdateBoxRequest(boxId.ToString(), boxName, boxContents);
-            var result = await boxesService.UpdateBox(request, Guid.NewGuid());
+            var result = await userBoxesState.UpdateBoxAsync(boxId, boxName, boxContents);
             Console.WriteLine(result);
         }
         catch (Exception ex)
@@ -71,4 +62,32 @@
             Console.WriteLine(ex);
         }
     }
+
+    public async Task CheckBoxContents()
+    {
+        Nav.NavigateTo(Pages.Boxes.BoxContents.Url(Nav, Box.BoxContents));
+    }
+
+
+    public async Task ShowEditDialog()
+    {
+        editDialog.Show();
+    }
+
+    public async Task EditBoxCallback(bool action, Box box)
+    {
+        if (!action)
+        {
+            return;
+        }
+        else
+        {
+            //Box.Id = box.Id;
+            //Box.BoxContents = box.BoxContents;
+            //Box.BoxName = box.BoxName;
+            await SendUpdateBoxRequest(box.Id, box.BoxName, box.BoxContents);
+        }
+
+    }
+
 }
