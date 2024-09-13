@@ -9,6 +9,7 @@
 @inject NavigationManager Nav
 
       <div class="row box">
+
         <div class="col">
           <div class="card shadow-sm">
             <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>@Box.BoxName</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em">@Box.BoxName</text></svg>
@@ -16,8 +17,9 @@
               <p class="card-text">@BoxDesc</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="CheckBoxContents">Peek Inside</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="ShowEditDialog">Edit Box</button>
+                        @*<button type="button" class="btn btn-sm btn-outline-secondary" @onclick="CheckBoxContents">Peek Inside</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="ShowEditDialog">Edit Box</button>*@
+                        <OptionsHeaderBox actionResult="MenuActionHandler"/>
                 </div>
                 <small class="text-body-secondary">@Box.BoxContents.Count Contents</small>
               </div>
@@ -28,13 +30,13 @@
 <MicroBoxer.Web.Components.Common.Dialogs.EditBoxDialog @ref="editDialog" Box="Box"
 onConfirm="(args) => EditBoxCallback(args.Item1, args.Item2)" />
 
-<MicroBoxer.Web.Components.Common.Dialogs.ConfirmDialog @ref="confirmDialog" />
+<MicroBoxer.Web.Components.Common.Dialogs.ConfirmDialog Id="@Box.Id.ToString()" @ref="confirmDialog" onConfirm="ConfirmDialogHandler" />
 
 @code{
     public bool EditMode { get; set; } = true;
     [Parameter]
     public Box Box { get; set; }
-    public string BoxDesc => Box.BoxName + "\n" + Box.Id;
+    public string BoxDesc => Box.BoxName + "||\n" + Box.Id;
     private EditBoxDialog editDialog;
     private ConfirmDialog confirmDialog;
 
@@ -43,35 +45,42 @@ onConfirm="(args) => EditBoxCallback(args.Item1, args.Item2)" />
     {
 
     }
-
-    public async Task SaveChanges()
-    {
-        await SendUpdateBoxRequest(Box.Id, Box.BoxName, Box.BoxContents);
-
-    }
-
     public async Task SendUpdateBoxRequest(Guid boxId, string boxName, IEnumerable<MicroBoxer.Web.Services.ViewModel.BoxContent> boxContents)
     {
         try
         {
             var result = await userBoxesState.UpdateBoxAsync(boxId, boxName, boxContents);
-            Console.WriteLine(result);
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+
+        }
+    }
+    public async Task SendDeleteBoxRequest(Guid boxId)
+    {
+        try
+        {
+            var result = await userBoxesState.DeleteBoxAsync(boxId);
+        }
+        catch (Exception ex)
+        {
+
         }
     }
 
     public async Task CheckBoxContents()
     {
-        Nav.NavigateTo(Pages.Boxes.BoxContents.Url(Nav, Box.BoxContents));
+        Nav.NavigateTo(Pages.Boxes.BoxContents.Url(Nav, Box.BoxContents, Box.Id));
     }
 
 
     public async Task ShowEditDialog()
     {
         editDialog.Show();
+    }
+    public async Task ShowConfirmDialog()
+    {
+        confirmDialog.Show();
     }
 
     public async Task EditBoxCallback(bool action, Box box)
@@ -82,10 +91,35 @@ onConfirm="(args) => EditBoxCallback(args.Item1, args.Item2)" />
         }
         else
         {
-            //Box.Id = box.Id;
-            //Box.BoxContents = box.BoxContents;
-            //Box.BoxName = box.BoxName;
             await SendUpdateBoxRequest(box.Id, box.BoxName, box.BoxContents);
+        }
+
+    }
+    public async Task ConfirmDialogHandler(bool action)
+    {
+        if (action)
+        {
+            await SendDeleteBoxRequest(Box.Id);
+            this.Dispose();
+        }
+    }
+    public async Task MenuActionHandler(string action)
+    {
+        switch (action)
+        {
+            case "PeekInsideClicked":
+                await CheckBoxContents();
+                break;
+            case "AddClicked":
+                break;
+            case "EditClicked":
+                await ShowEditDialog();
+                break;
+            case "DeleteClicked":
+                await ShowConfirmDialog();
+                break;
+            case "ScanClicked":
+                break;
         }
 
     }

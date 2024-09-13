@@ -1,10 +1,16 @@
 ﻿@page "/user/boxcontents"
+@using MicroBoxer.Web.Services
 @using MicroBoxer.Web.Services.ViewModel
 @using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveServer
+@inject NavigationManager Nav
+@inject BoxesService boxesService
+@inject BoxesNotificationService boxesNotificationService
+@inject UserBoxesState userBoxesState
 
 <AuthorizeView>
     <Authorized>
+        <MainOptionsHeader actionResult="MenuActionHandler" />
         <div class="row contentlist h-100 py-5">
             <div class="container">
                 @foreach (var content in BoxContentsList)
@@ -15,6 +21,7 @@
             }
             </div>
         </div>
+        <MicroBoxer.Web.Components.Pages.User.BoxesRefreshOnChange RefreshRequest="RefreshContents" />
     </Authorized>
     <NotAuthorized>
         <p>Unauthorized</p>
@@ -25,12 +32,60 @@
 
 @code {
     [Parameter]
-    public static List<BoxContent> BoxContentsList { get; set; }
+    public static List<BoxContent> BoxContentsList { get; set; } = new List<BoxContent>();
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+    [Parameter]
+    public static Guid BoxId { get; set; }
 
-    public static string Url(NavigationManager nav, List<BoxContent> boxContentsList)
+    public static string Url(NavigationManager nav, List<BoxContent> boxContentsList, Guid boxId)
     {
+        BoxId = boxId;
         BoxContentsList = boxContentsList;
         return $"/user/boxcontents?returnUrl={Uri.EscapeDataString(nav.ToBaseRelativePath(nav.Uri))}";
     }
+    protected override async Task OnInitializedAsync()
+    {
+        await GetContents();
+    }
+    public async Task GetContents()
+    {
 
+        if(BoxId != null)
+        {
+            var contents = await userBoxesState.GetBoxContentsAsync((Guid)BoxId);
+            BoxContentsList = new List<BoxContent>();
+            foreach (var content in contents)
+            {
+                BoxContentsList.Add(await content.FromRecord());
+            }
+        }
+
+    }
+    private async Task RefreshContents()
+    {
+        Nav.Refresh(true);
+        //await GetContents();
+
+    }
+    public async Task CreateContent()
+    {
+        await userBoxesState.CreateBoxContentAsync(BoxId, "ContentName", "ContentDescription");
+    }
+    public async Task MenuActionHandler(string action)
+    {
+        switch (action)
+        {
+            case "ReturnClicked":
+                Nav.NavigateTo(ReturnUrl);
+                break;
+            case "AddClicked":
+                await CreateContent();
+                break;
+            case "ScanClicked":
+
+                break;
+        }
+
+    }
 }

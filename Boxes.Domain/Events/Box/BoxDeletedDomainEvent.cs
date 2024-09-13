@@ -2,7 +2,7 @@
 
 namespace Boxes.Domain.Events.Box;
 public record BoxDeletedDomainEvent(
-            Guid id
+            Guid id, Guid userId
     ) : INotification;
 
 

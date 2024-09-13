@@ -1,22 +1,15 @@
 ﻿using EventBus.Events;
-using MicroBoxer.Web.Services;
 
-namespace MicroBoxer.Web.IntegrationEvents.Events;
-
-public record BoxCreatedIntegrationEvent : IntegrationEvent
+namespace MicroBoxer.Web.IntegrationEvents
 {
-    public Guid Id { get; set; }
-    public string BoxName { get; init; }
-
-    public IEnumerable<BoxContentRecord> BoxContents { get; set; }
-
-    public BoxCreatedIntegrationEvent(string boxName, Guid id, IEnumerable<BoxContentRecord> boxContents)
+    public record BoxCreatedIntegrationEvent : IntegrationEvent
     {
-        //new DTO here?
-        BoxName = boxName;
-        Id = id;
-        BoxContents = boxContents;
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public BoxCreatedIntegrationEvent(Guid id, Guid userId)
+        {
+            Id = id; UserId = userId;
+        }
 
     }
-
 }

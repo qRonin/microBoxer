@@ -1,0 +1,19 @@
+﻿svg.qr-code {
+    fill: rgb(189, 181, 181);
+}
+    svg.qr-code:hover {
+        fill: #10106d;
+    }
+svg.square-dotted {
+    fill: rgb(189, 181, 181);
+}
+    svg.square-dotted:hover {
+        fill: rgb(9, 146, 27);
+    }
+svg.arrow-back {
+    fill: rgb(189, 181, 181);
+}
+
+    svg.arrow-back:hover {
+        fill: #10106d;
+    }

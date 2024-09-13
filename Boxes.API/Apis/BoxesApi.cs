@@ -29,7 +29,7 @@ namespace Boxes.API.Apis
             return api;
         }
         public static async Task<Results<Ok<BoxContentVM>, NotFound>> GetBoxContent
-            (Guid? id, [AsParameters] BoxContentsServices services)
+            (Guid? id, [AsParameters] BoxesServices services)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace Boxes.API.Apis
                     var userId = await services.IdentityService.GetUserIdentity();
                     services.Logger.LogInformation($"UserId From the Request: {userId}");
                     //var boxContent = await services.Queries.GetBoxContent((Guid)id);
-                    var boxContent = await services.Queries.GetBoxContent((Guid)id,Guid.Parse(userId));
+                    var boxContent = await services.ContentQueries.GetBoxContent((Guid)id,Guid.Parse(userId));
 
                     return TypedResults.Ok(boxContent);
                 }
@@ -51,7 +51,7 @@ namespace Boxes.API.Apis
             }
         }
         public static async Task<Results<Ok<IEnumerable<BoxContentVM>>, NotFound>> GetBoxContents
-            (Guid? boxId, [AsParameters] BoxContentsServices services)
+            (Guid? boxId, [AsParameters] BoxesServices services)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Boxes.API.Apis
                     var userId = await services.IdentityService.GetUserIdentity();
                     services.Logger.LogInformation($"UserId From the Request: {userId}");
                     //var boxContents = await services.Queries.GetBoxContentsByBoxId((Guid)boxId);
-                    var boxContents = await services.Queries.GetBoxContentsByBoxId((Guid)boxId,Guid.Parse(userId));
+                    var boxContents = await services.ContentQueries.GetBoxContentsByBoxId((Guid)boxId,Guid.Parse(userId));
                     return TypedResults.Ok(boxContents);
                 }
                 else return TypedResults.NotFound();
@@ -203,16 +203,30 @@ namespace Boxes.API.Apis
             services.Logger.LogInformation($"UserId From the Request: {userId}");
 
 
-            bool result;
+            bool result = false;
             if (request.withContent)
             {
+                //var deleteBoxWithContentCommand = new DeleteBoxWithContentCommand(Guid.Parse(request.Id));
+                //result = await DeleteBoxWithContent(deleteBoxWithContentCommand, services);
+                var contents = await GetBoxContentsForDeletion(Guid.Parse(request.Id), services);
+                foreach(var content in contents)
+                {
+                    DeleteBoxContentCommand deleteBoxContentCommand = new DeleteBoxContentCommand(content.Id);
+                    result = await DeleteContent(deleteBoxContentCommand, services);
+                }
+                    //var deleteBoxWithContentCommand = new DeleteBoxCommand(Guid.Parse(request.Id));
+                    //result = await DeleteBox(deleteBoxWithContentCommand, services);
                 var deleteBoxWithContentCommand = new DeleteBoxWithContentCommand(Guid.Parse(request.Id));
                 result = await DeleteBoxWithContent(deleteBoxWithContentCommand, services);
+
+
             }
             else
             {
-                var deleteBoxCommand = new DeleteBoxCommand(Guid.Parse(request.Id));
-                result = await DeleteBox(deleteBoxCommand, services);
+                //var deleteBoxCommand = new DeleteBoxCommand(Guid.Parse(request.Id));
+                //result = await DeleteBox(deleteBoxCommand, services);
+
+                result = true;
             }
 
             if (result)
@@ -308,6 +322,29 @@ namespace Boxes.API.Apis
                 services.Logger.LogWarning($"CreateBoxContentCommand failed - RequestId: {requestId}");
             }
             return TypedResults.Ok(result.Id.ToString());
+        }
+
+
+        private static async Task<IEnumerable<BoxContentVM>> GetBoxContentsForDeletion
+        (Guid? boxId, [AsParameters] BoxesServices services)
+        {
+            try
+            {
+                if (boxId != null)
+                {
+                    var userId = await services.IdentityService.GetUserIdentity();
+                    services.Logger.LogInformation($"UserId From the Request: {userId}");
+                    //var boxContents = await services.Queries.GetBoxContentsByBoxId((Guid)boxId);
+                    var boxContents = await services.ContentQueries.GetBoxContentsByBoxId((Guid)boxId, Guid.Parse(userId));
+                    return boxContents;
+                }
+                else return null;
+
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

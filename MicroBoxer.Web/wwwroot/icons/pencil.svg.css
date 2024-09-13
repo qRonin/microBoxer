@@ -1,0 +1,6 @@
+﻿svg.pencilsvg {
+    fill: white;
+}
+svg.pencilsvg:hover {
+    fill:red;
+}

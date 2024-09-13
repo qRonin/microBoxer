@@ -1,7 +1,10 @@
-﻿@using MicroBoxer.Web.Services
+﻿@using MicroBoxer.Web.Extensions
+@using MicroBoxer.Web.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveServer
 @inject BoxesNotificationService boxesNotificationService
 @inject NavigationManager Nav
+@inject AuthenticationStateProvider authenticationStateProvider
 @implements IDisposable
 
 @code {
@@ -14,7 +17,7 @@
     {
         if (firstRender)
         {
-            var userId = "1";
+            var userId = await authenticationStateProvider.GetUserIdAsync();
             if (!string.IsNullOrEmpty(userId))
             {
                 boxesChangedSubscription =  boxesNotificationService.SubscribeToBoxesChangesNotifications(

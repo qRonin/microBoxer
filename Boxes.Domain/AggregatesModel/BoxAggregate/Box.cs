@@ -63,14 +63,14 @@ namespace Boxes.Domain.AggregatesModel.BoxAggregate
         }
         public void AddBoxUpdatedDomainEvent()
         {
-            var boxUpdatedDomainEvent = new BoxUpdatedDomainEvent(this.Id);
+            var boxUpdatedDomainEvent = new BoxUpdatedDomainEvent(this.Id, this.UserId);
 
             this.AddDomainEvent(boxUpdatedDomainEvent);
 
         }
         public void AddBoxDeletedDomainEvent()
         {
-            var boxDeletedDomainEvent = new BoxDeletedDomainEvent(this.Id);
+            var boxDeletedDomainEvent = new BoxDeletedDomainEvent(this.Id, this.UserId);
 
             this.AddDomainEvent(boxDeletedDomainEvent);
 

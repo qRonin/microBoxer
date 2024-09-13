@@ -1,7 +1,7 @@
 ﻿@rendermode InteractiveServer
 
 <CascadingValue Value=@this IsFixed=true>
-    <dialog @ref="@dialogElement" @attributes=@CapturedAttributes>
+    <dialog id="@Id" @ref="@dialogElement" @attributes=@CapturedAttributes>
         @if (visible)
         {
             @ChildContent
@@ -26,6 +26,8 @@
     [Inject]
     private IJSRuntime jsRuntime { get; set; }
 
+    [Parameter]
+    public string Id { get; set; }
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 

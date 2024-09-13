@@ -28,7 +28,7 @@ public class BoxCreatedDomainEventHandler : INotificationHandler<BoxCreatedDomai
 
         _logger.LogInformation($"Received domain event: {domainEvent.GetType()}, EventContent: {domainEvent.box.Id},{domainEvent.box.BoxName} ");
         var boxCreatedEvent = new BoxCreatedIntegrationEvent
-           (domainEvent.box.Id);
+           (domainEvent.box.Id, domainEvent.box.UserId);
         _logger.LogInformation($"Domain event: {domainEvent.GetType()}, Created IntegrationEvent, saving for publish");
         await _boxesIntegrationEventService.AddAndSaveEventAsync(boxCreatedEvent);
         //await _boxesIntegrationEventService.PublishEventsThroughEventBusAsync(boxCreatedEvent);

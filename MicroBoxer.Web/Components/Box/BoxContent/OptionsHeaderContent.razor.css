@@ -1,0 +1,40 @@
+﻿svg.square-dotted{
+    fill:rgb(189, 181, 181);
+
+}
+    svg.square-dotted:hover {
+        fill:rgb(9, 146, 27);
+    }
+
+svg.pencilsvg {
+    fill: rgb(189, 181, 181);
+}
+    svg.pencilsvg:hover {
+        fill:#10106d;
+    }
+
+svg.trashsvg {
+    fill: rgb(189, 181, 181);
+}
+    svg.trashsvg:hover {
+        fill:rgb(131, 7, 7);
+    }
+
+svg.qr-code {
+    fill: rgb(189, 181, 181);
+}
+    svg.qr-code:hover {
+        fill: #10106d;
+    }
+
+svg.arrow-back {
+    fill: rgb(189, 181, 181);
+}
+ svg.arrow-back:hover {
+     fill: #10106d;
+}
+
+
+    li.nav-item{
+        margin:0px 5px 0px 5px;
+    }

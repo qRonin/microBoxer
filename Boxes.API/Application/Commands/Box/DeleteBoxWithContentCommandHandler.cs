@@ -1,6 +1,8 @@
-﻿using Boxes.API.Application.IntegrationEvents;
+﻿using Boxes.API.Application.Commands.BoxContent;
+using Boxes.API.Application.IntegrationEvents;
 using Boxes.Domain.AggregatesModel.BoxAggregate;
 using MediatR;
+using System.Threading;
 
 namespace Boxes.API.Application.Commands.Box;
 
@@ -31,18 +33,36 @@ public class DeleteBoxWithContentCommandHandler : IRequestHandler<DeleteBoxWithC
     public async Task<bool> Handle(DeleteBoxWithContentCommand request, CancellationToken cancellationToken)
     {
         Boxes.Domain.AggregatesModel.BoxAggregate.Box box = await _boxRepository.GetAsync(request.Id);
-
         if (box.BoxContents != null && box.BoxContents.Count > 0)
         {
+            /*
             foreach (var content in box.BoxContents)
             {
-                _boxContentRepository.Delete(content.Id);
-                content.AddBoxContentDeletedDomainEvent();
+                //_boxContentRepository.Delete(content.Id);
+                //content.AddBoxContentDeletedDomainEvent();
+
+
+                //DeleteBoxContentCommand deleteBoxContentCommand = new DeleteBoxContentCommand(content.Id);
+                //await _mediator.Send(deleteBoxContentCommand, cancellationToken);
             }
+            //await _boxContentRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            */
+            await DeleteContents(box.BoxContents, cancellationToken);
         }
+
         _boxRepository.Delete(request.Id);
         return await _boxRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     }
 
+    private async Task<bool> DeleteContents(IEnumerable<Boxes.Domain.AggregatesModel.BoxAggregate.BoxContent> contents, CancellationToken cancellationToken)
+    {
+
+        foreach (var content in contents)
+        {
+            DeleteBoxContentCommand deleteBoxContentCommand = new DeleteBoxContentCommand(content.Id);
+            await _mediator.Send(deleteBoxContentCommand, cancellationToken);
+        }
+        return await _boxContentRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+    }
 
 }

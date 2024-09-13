@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 namespace Boxes.Domain.Events.BoxContent;
 
 public record BoxContentDeletedDomainEvent(
-    Guid id
+    Guid id, Guid userId
     ) : INotification;
 

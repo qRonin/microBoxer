@@ -27,7 +27,7 @@ public class BoxContentUpdatedDomainEventHandler : INotificationHandler<BoxConte
     {
 
         var boxContentUpdatedEvent = new BoxContentUpdatedIntegrationEvent
-           (domainEvent.id);
+           (domainEvent.id, domainEvent.userId);
         await _boxesIntegrationEventService.AddAndSaveEventAsync(boxContentUpdatedEvent);
 
         

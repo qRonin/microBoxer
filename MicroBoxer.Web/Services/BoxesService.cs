@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using MicroBoxer.Web.Services.ViewModel;
+using System.Text.Json;
 
 namespace MicroBoxer.Web.Services;
 
@@ -9,16 +10,18 @@ public class BoxesService(HttpClient httpClient)
     public Task<BoxRecord[]> GetBoxes()
     {
        var result = httpClient.GetFromJsonAsync<BoxRecord[]>(remoteServiceBaseUrlBoxes)!;
-        Console.WriteLine(result);
         return result;
     }
     public Task<BoxRecord> GetBox(Guid id)
     {
         var result = httpClient.GetFromJsonAsync<BoxRecord>(remoteServiceBaseUrlBoxes+id)!;
-        Console.WriteLine(result);
         return result;
     }
-
+    public Task<BoxContentRecord[]> GetBoxContents(Guid id)
+    {
+        var result = httpClient.GetFromJsonAsync<BoxContentRecord[]>($"/api/boxesapi/box/contents/{id}")!;
+        return result;
+    }
     public async Task<Guid?> CreateBox(CreateBoxRequest request
         , Guid requestId
         )

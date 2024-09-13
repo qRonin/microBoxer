@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using EventBusRabbitMQ;
 using EventBus.Abstractions;
-using MicroBoxer.Web.IntegrationEvents.Events;
 using MicroBoxer.Web.IntegrationEvents.EventHandlers;
 using WebApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.JsonWebTokens;
 using MicroBoxer.ServiceDefaults;
+using MicroBoxer.Web.IntegrationEvents;
 
 namespace MicroBoxer.Web.Extensions;
 
@@ -26,6 +26,7 @@ public static class Extensions
         builder.Services.AddSingleton<BoxesNotificationService>();
         builder.Services.AddScoped<LogOutService>();
         builder.Services.AddScoped<UserBoxesState>();
+       
 
         builder.Services.AddHttpClient<BoxesService>(b => b.BaseAddress = new("https://localhost:7046"))
         .AddApiVersion(1.0)
@@ -39,7 +40,11 @@ public static class Extensions
     {
         //eventBus.AddSubscription<event, handler>();
         eventBus.AddSubscription <BoxCreatedIntegrationEvent, BoxCreatedIntegrationEventHandler>();
-
+        eventBus.AddSubscription<BoxUpdatedIntegrationEvent, BoxUpdatedIntegrationEventHandler>();
+        eventBus.AddSubscription<BoxDeletedIntegrationEvent, BoxDeletedIntegrationEventHandler>();
+        eventBus.AddSubscription<BoxContentCreatedIntegrationEvent, BoxContentCreatedIntegrationEventHandler>();
+        eventBus.AddSubscription<BoxContentUpdatedIntegrationEvent, BoxContentUpdatedIntegrationEventHandler>();
+        eventBus.AddSubscription<BoxContentDeletedIntegrationEvent, BoxContentDeletedIntegrationEventHandler>();
     }
     public static void AddAuthenticationServices(this IHostApplicationBuilder builder)
     {

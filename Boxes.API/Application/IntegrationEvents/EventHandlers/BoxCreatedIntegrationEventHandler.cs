@@ -15,6 +15,7 @@ namespace Boxes.API.Application.IntegrationEvents.EventHandlers
 
         public BoxCreatedIntegrationEventHandler(int id, string boxName)
         {
+
                 Id = id;
                 BoxName = boxName;
                 BoxContents = new List<BoxContentDTO>();

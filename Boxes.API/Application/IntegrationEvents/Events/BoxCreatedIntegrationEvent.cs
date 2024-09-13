@@ -7,9 +7,10 @@ namespace Boxes.API.Application.IntegrationEvents.Events
     public record BoxCreatedIntegrationEvent : IntegrationEvent
     {
         public Guid Id { get; set; }
-        public BoxCreatedIntegrationEvent(Guid id)
+        public Guid UserId { get; set; }
+        public BoxCreatedIntegrationEvent(Guid id, Guid userId)
         {
-            Id = id;      
+            Id = id; UserId = userId;
         }
 
     }

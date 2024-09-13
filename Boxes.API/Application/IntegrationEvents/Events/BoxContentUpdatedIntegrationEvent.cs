@@ -5,9 +5,10 @@ namespace Boxes.API.Application.IntegrationEvents.Events
     public record BoxContentUpdatedIntegrationEvent : IntegrationEvent
     {
         public Guid Id { get; set; }
-        public BoxContentUpdatedIntegrationEvent(Guid id)
+        public Guid UserId { get; set; }
+        public BoxContentUpdatedIntegrationEvent(Guid id, Guid userId)
         {
-            Id = id;
+            Id = id; UserId = userId;
         }
     }
 }

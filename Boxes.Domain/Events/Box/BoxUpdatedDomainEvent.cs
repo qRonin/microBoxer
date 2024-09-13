@@ -2,7 +2,7 @@
 
 namespace Boxes.Domain.Events.Box;
 public record BoxUpdatedDomainEvent(
-            Guid id
+            Guid id, Guid userId
     ) : INotification;
 
 
