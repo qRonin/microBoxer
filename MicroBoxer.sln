@@ -9,6 +9,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroBoxer.Web", "MicroBoxer.Web\MicroBoxer.Web.csproj", "{364DEA51-A572-4628-B226-5C6B310976D4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1159CF12-74FD-4FF7-9FB4-0A86888148F2}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.MD = Readme.MD
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3C28385B-484C-4C35-8C20-F12CE3D0994F}"
 EndProject
