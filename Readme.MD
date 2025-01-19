@@ -9,7 +9,13 @@ Project created on .Net aspire for handling multiple microservices.
 Visit MicroBoxer.Web for web client.
 
 
-WIP
+WIP 
+x
 
 
  
+123
+123
+123
+123
+321
